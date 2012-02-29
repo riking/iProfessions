@@ -1,0 +1,10 @@
+name: iProfessions
+main: com.ptibiscuit.iprofession.ProfessionsPlugin
+version: 0.01
+website:
+authors:
+- Ptibiscuit
+commands:
+  plearn:
+    description: Permet d'apprendre un metier.
+    usage: /plearn [Tag]

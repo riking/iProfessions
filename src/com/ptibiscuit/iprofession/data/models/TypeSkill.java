@@ -1,4 +1,4 @@
-package com.ptibiscuit.iprofession.data;
+package com.ptibiscuit.iprofession.data.models;
 
 import java.util.HashMap;
 import java.util.Map;

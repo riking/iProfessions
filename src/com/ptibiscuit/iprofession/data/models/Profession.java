@@ -1,5 +1,7 @@
-package com.ptibiscuit.iprofession.data;
+package com.ptibiscuit.iprofession.data.models;
 
+import com.ptibiscuit.iprofession.data.models.Require;
+import com.ptibiscuit.iprofession.Plugin;
 import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
@@ -32,13 +34,11 @@ public class Profession {
 	public ArrayList<Require> canLearn(Player p)
 	{
 		ArrayList<Require> incapacitent = new ArrayList<Require>();
-		
 		for (Require r : prerequis)
 		{
 			if (!r.has(p))
 				incapacitent.add(r);
 		}
-		
 		return incapacitent;
 	}
 	

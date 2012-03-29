@@ -1,8 +1,8 @@
-package com.ptibiscuit.iprofession.data;
+package com.ptibiscuit.iprofession.data.models;
 
 import org.bukkit.entity.Player;
 
-import com.ptibiscuit.iprofession.ProfessionsPlugin;
+import com.ptibiscuit.iprofession.Plugin;
 
 public class Require {
 	private String category;
@@ -35,7 +35,12 @@ public class Require {
 
 	public boolean has(Player p)
 	{
-		if (getRequired() > ProfessionsPlugin.getStatsHandler().getStat(p, getCategory(), getKey()))
+		if (!Plugin.getStatsHandler().isStatsEnabling())
+		{
+			return true;
+		}
+		
+		if (getRequired() > Plugin.getStatsHandler().getStat(p, getCategory(), getKey()))
 		{
 			return false;
 		}
@@ -44,7 +49,7 @@ public class Require {
 	
 	public int getHowManyPointNeedToComplete(Player p)
 	{
-		return getRequired() - ProfessionsPlugin.getStatsHandler().getStat(p, getCategory(), getKey());
+		return getRequired() - Plugin.getStatsHandler().getStat(p, getCategory(), getKey());
 	}
 
 	public void setHasnot(String hasnot) {

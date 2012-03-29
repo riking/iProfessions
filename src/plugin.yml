@@ -1,10 +1,15 @@
 name: iProfessions
-main: com.ptibiscuit.iprofession.ProfessionsPlugin
-version: 0.01
-website:
+main: com.ptibiscuit.iprofession.Plugin
+version: 1.2.3
 authors:
 - Ptibiscuit
 commands:
   plearn:
-    description: Permet d'apprendre un metier.
-    usage: /plearn [Tag]
+    description: Usefull to learn a profession.
+    usage: /plearn <Player>
+  pforget:
+    description: Forget your profession.
+    usage: /pforget
+  psetuser:
+    description: Set a profession to a player
+    usage: /pset <Player> <Profession>

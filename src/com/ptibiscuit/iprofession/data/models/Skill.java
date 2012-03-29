@@ -1,4 +1,6 @@
-package com.ptibiscuit.iprofession.data;
+package com.ptibiscuit.iprofession.data.models;
+
+import com.ptibiscuit.iprofession.data.models.TypeSkill;
 
 public class Skill {
 	private int id;

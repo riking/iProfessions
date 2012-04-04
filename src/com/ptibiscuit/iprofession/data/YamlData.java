@@ -94,8 +94,18 @@ public class YamlData implements IData {
 					}
 				}
 			}
-			
-			professions.add(new Profession(tag, name, skills, prerequis));
+			// On va prendre la profession parent, ou null
+			Profession parent = null;
+			String tagParent = data.getString("parent");
+			if (tagParent != null)
+			{
+				Profession possibleParent = this.getProfession(tagParent);
+				if (possibleParent != null)
+					parent = possibleParent;
+				else
+					Plugin.getInstance().getMyLogger().warning("The parent of " + tag + ", " + tagParent + " is unkwown; Are you sure of you ?");
+			}
+			professions.add(new Profession(tag, name, skills, prerequis, parent));
 		}
 	}
 	

@@ -1,24 +1,23 @@
 package com.ptibiscuit.iprofession.data.models;
 
-import com.ptibiscuit.iprofession.data.models.Require;
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.ArrayList;
-
 import org.bukkit.entity.Player;
 
 public class Profession {
 	private String name;
 	private String tag;
 	private ArrayList<Skill> skills = new ArrayList<Skill>();
+	private Profession parent;
 	
 	private ArrayList<Require> prerequis = new ArrayList<Require>();
 	
-	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis)
+	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis, Profession parent)
 	{
 		this.name = name;
 		this.skills = skills;
 		this.tag = tag;
 		this.prerequis = prerequis;
+		this.parent = parent;
 	}
 	
 	public boolean hasSkill(Skill sk)
@@ -28,6 +27,9 @@ public class Profession {
 			if (sk.equals(s))
 				return true;
 		}
+		// Ok, on va tenter notre profession supérieure, si on en a une.
+		if (parent != null)
+			return this.parent.hasSkill(sk);
 		return false;
 	}
 	
@@ -61,5 +63,9 @@ public class Profession {
 	@Override
 	public String toString() {
 		return tag;
+	}
+
+	public Profession getParent() {
+		return parent;
 	}
 }

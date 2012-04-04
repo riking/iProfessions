@@ -148,7 +148,8 @@ public class Plugin extends JavaPluginEnhancer {
 		ArrayList<Require> rqire = p.canLearn(writer);
 		if (rqire.isEmpty())
 		{
-			if (data.getProfessionByPlayer(writer.getName()) == null)
+			Profession actualProfession = data.getProfessionByPlayer(writer.getName());
+			if (actualProfession == p.getParent())
 			{
 				// Okey !
 				String m = this.getSentence("get_prof").replace("{NAME}", p.getName());
@@ -158,7 +159,10 @@ public class Plugin extends JavaPluginEnhancer {
 			}
 			else
 			{
-				this.sendPreMessage(writer, "already_profession");
+				if (actualProfession != null)
+					this.sendPreMessage(writer, "already_profession");
+				else
+					this.sendPreMessage(writer, "need_to_learn_parent_profession");
 			}
 		}
 		else
@@ -204,6 +208,7 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("fake_tag_prof", "Un tag de profession du fichier professions.yml n'existe pas.");
 		p.put("player_unknown", "Ce joueur n'existe pas.");
 		p.put("setuser_succ", "Vous avez bourré le crane de {PLAYER} en lui apprenant \"{PROFESSION}\"");
+		p.put("need_to_learn_parent_profession", "Vous devez d'abord apprendre une autre profession pour accéder à celle-ci");
 	}
 	
 	public Skill getSkill(int id, TypeSkill ts)

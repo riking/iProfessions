@@ -116,7 +116,7 @@ public class Plugin extends JavaPluginEnhancer {
 				}
 				
 				Profession p = data.getProfession(args[1]);
-				if (p != null)
+				if (p != null  || args[1].equalsIgnoreCase("null"))
 				{
 					OfflinePlayer player = this.getServer().getOfflinePlayer(args[0]);
 					if (player != null)

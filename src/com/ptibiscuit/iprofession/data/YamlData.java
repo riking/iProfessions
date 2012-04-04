@@ -70,8 +70,8 @@ public class YamlData implements IData {
 			// On va cherche la liste des skills
 			ConfigurationSection dataSkills = data.getConfigurationSection("skills");
 			
-			String[] types = new String[]{"useItem", "breakBlock", "craftItem"};
-			TypeSkill[] typesSkill = new TypeSkill[]{TypeSkill.USE, TypeSkill.BREAK, TypeSkill.CRAFT};
+			String[] types = new String[]{"useItem", "breakBlock", "craftItem", "smeltItem"};
+			TypeSkill[] typesSkill = new TypeSkill[]{TypeSkill.USE, TypeSkill.BREAK, TypeSkill.CRAFT, TypeSkill.SMELT};
 			
 			for (int i = 0;i < types.length;i++)
 			{

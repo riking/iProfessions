@@ -2,6 +2,7 @@ package com.ptibiscuit.iprofession;
 
 import com.ptibiscuit.framework.JavaPluginEnhancer;
 import com.ptibiscuit.framework.PermissionHelper;
+import com.ptibiscuit.iprofession.data.IData;
 import com.ptibiscuit.iprofession.data.StatsHandler;
 import com.ptibiscuit.iprofession.data.YamlData;
 import com.ptibiscuit.iprofession.data.models.Profession;
@@ -27,7 +28,7 @@ public class Plugin extends JavaPluginEnhancer {
 	private static StatsHandler stats = new StatsHandler();
 	private SkillManager sm = new SkillManager();
 	private LearnManagerSign lms = new LearnManagerSign();
-	private static YamlData data;
+	private static IData data;
 	
 	@Override
 	public void onDisable() 
@@ -247,7 +248,7 @@ public class Plugin extends JavaPluginEnhancer {
 		return instance;
 	}
 
-	public static YamlData getData() {
+	public static IData getData() {
 		return data;
 	}
 }

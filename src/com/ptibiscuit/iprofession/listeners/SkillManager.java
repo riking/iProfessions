@@ -3,13 +3,16 @@ package com.ptibiscuit.iprofession.listeners;
 import com.ptibiscuit.iprofession.Plugin;
 import com.ptibiscuit.iprofession.data.models.Skill;
 import com.ptibiscuit.iprofession.data.models.TypeSkill;
+import java.util.ArrayList;
 import java.util.Map.Entry;
+import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -22,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class SkillManager implements Listener {
 
+	private ArrayList<Location> ignoredBlocks = new ArrayList<Location>();
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent e) {
 		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
@@ -29,12 +34,30 @@ public class SkillManager implements Listener {
 		{
 			if (!Plugin.getInstance().hasSkill(e.getPlayer(), s))
 			{
-				e.setCancelled(true);
-				Plugin.getInstance().sendMessage(e.getPlayer(), s.getNotHave());
+				if (!this.ignoredBlocks.contains(e.getBlock().getLocation()))
+				{
+					e.setCancelled(true);
+					Plugin.getInstance().sendMessage(e.getPlayer(), s.getNotHave());
+				}
+			}
+		}
+		this.ignoredBlocks.remove(e.getBlock().getLocation());
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onBlockPlace(BlockPlaceEvent e) {
+		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
+		if (s != null)
+		{
+			if (!Plugin.getInstance().hasSkill(e.getPlayer(), s))
+			{
+				// Si il n'a pas ce skill, ça veut dire qu'il est potentiellement possible qu'il veuille
+				// retirer ce bloc par après.
+				this.ignoredBlocks.add(e.getBlock().getLocation());
 			}
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCraftItem(PrepareItemCraftEvent e) {
 		

@@ -1,6 +1,6 @@
 name: iProfessions
 main: com.ptibiscuit.iprofession.Plugin
-version: 1.2.3
+version: 1.5
 authors:
 - Ptibiscuit
 commands:

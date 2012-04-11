@@ -1,22 +1,18 @@
 package com.ptibiscuit.iprofession.listeners;
 
+import com.ptibiscuit.framework.PermissionHelper;
 import com.ptibiscuit.iprofession.Plugin;
 import com.ptibiscuit.iprofession.data.models.Skill;
 import com.ptibiscuit.iprofession.data.models.TypeSkill;
 import java.util.ArrayList;
-import java.util.Map.Entry;
 import org.bukkit.Location;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,6 +25,9 @@ public class SkillManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent e) {
+		if (PermissionHelper.has(e.getPlayer(), "iprofessions.god", true))
+			return;
+		
 		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
 		if (s != null)
 		{
@@ -46,6 +45,9 @@ public class SkillManager implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent e) {
+		if (PermissionHelper.has(e.getPlayer(), "iprofessions.god", true))
+			return;
+		
 		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
 		if (s != null)
 		{
@@ -60,10 +62,11 @@ public class SkillManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCraftItem(PrepareItemCraftEvent e) {
-		
 		if (e.getView().getPlayer() != null && e.getView().getPlayer() instanceof Player)
 		{
 			Player p = (Player) e.getView().getPlayer();
+			if (PermissionHelper.has(p, "iprofessions.god", true))
+				return;
 			Skill s = Plugin.getInstance().getSkill(e.getRecipe().getResult().getTypeId(), TypeSkill.CRAFT);
 			if (s != null)
 			{
@@ -79,9 +82,10 @@ public class SkillManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent e)
 	{
+		if (PermissionHelper.has(e.getPlayer(), "iprofessions.god", true))
+			return;
 		if (e.isCancelled())
 			return;
-		
 		if (e.getItem() != null)
 		{
 			Skill s = Plugin.getInstance().getSkill(e.getItem().getTypeId(), TypeSkill.USE);
@@ -104,6 +108,8 @@ public class SkillManager implements Listener {
 		if (e.getWhoClicked() != null && e.getWhoClicked() instanceof Player)
 		{
 			Player p = (Player) e.getWhoClicked();
+			if (PermissionHelper.has(p, "iprofessions.god", true))
+				return;
 			if (e.getInventory() instanceof FurnaceInventory && e.getSlotType() == SlotType.CONTAINER && e.getSlot() == 0)
 			{
 				// On a affaire à quelqu'un qui veut mettre un objet dans le four pour le fondre. On s'en occupe, cap'tain
@@ -118,6 +124,5 @@ public class SkillManager implements Listener {
 				}
 			}
 		}
-		
 	}
 }

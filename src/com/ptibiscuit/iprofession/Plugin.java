@@ -74,9 +74,7 @@ public class Plugin extends JavaPluginEnhancer {
 			sender.sendMessage("[iPermissions] " + this.getSentence("run_as_player"));
 			return true;
 		}
-		
 		Player writer = (Player) sender;
-		
 		try
 		{
 			if (label.equalsIgnoreCase("plearn"))
@@ -133,6 +131,32 @@ public class Plugin extends JavaPluginEnhancer {
 				else
 				{
 					this.sendPreMessage(writer, "unknown_tag");
+				}
+			}
+			else if (label.equalsIgnoreCase("pwhois"))
+			{
+				OfflinePlayer pFocus;
+				if (args.length == 0)
+				{
+					pFocus = writer;
+				}
+				else
+				{
+					pFocus = this.getServer().getOfflinePlayer(args[0]);
+				}
+				
+				if (pFocus != null)
+				{
+					this.sendMessage(writer, this.getSentence("whois_entete").replace("{PLAYER}", pFocus.getName()));
+					Profession prof = this.data.getProfessionByPlayer(pFocus.getName());
+					if (prof != null)
+						this.sendMessage(writer, this.getSentence("whois_first").replace("{PROFESSION}", prof.getName()));
+					else
+						this.sendMessage(writer, this.getSentence("whois_first").replace("{PROFESSION}", "null"));
+				}
+				else
+				{
+					this.sendPreMessage(sender, "player_unknown");
 				}
 			}
 		}
@@ -210,6 +234,8 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("player_unknown", "Ce joueur n'existe pas.");
 		p.put("setuser_succ", "Vous avez bourré le crane de {PLAYER} en lui apprenant \"{PROFESSION}\"");
 		p.put("need_to_learn_parent_profession", "Vous devez d'abord apprendre une autre profession pour accéder à celle-ci");
+		p.put("whois_entete", ChatColor.GOLD + "Informations sur {PLAYER}:" + ChatColor.WHITE);
+		p.put("whois_first", " Profession: {PROFESSION}");
 	}
 	
 	public Skill getSkill(int id, TypeSkill ts)

@@ -1,6 +1,6 @@
 name: iProfessions
 main: com.ptibiscuit.iprofession.Plugin
-version: 1.5
+version: 1.6
 authors:
 - Ptibiscuit
 commands:
@@ -13,3 +13,6 @@ commands:
   psetuser:
     description: Set a profession to a player
     usage: /pset <Player> <Profession>
+  pwhois:
+    description: Set a profession to a player
+    usage: /pwhois [Player]

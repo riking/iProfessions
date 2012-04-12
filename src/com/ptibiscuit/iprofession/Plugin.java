@@ -138,10 +138,21 @@ public class Plugin extends JavaPluginEnhancer {
 				OfflinePlayer pFocus;
 				if (args.length == 0)
 				{
+					if (!PermissionHelper.has(writer, "iprofessions.whois.self", false))
+					{
+						this.sendPreMessage(writer, "have_perm");
+						return true;
+					}
 					pFocus = writer;
 				}
 				else
 				{
+					if (!PermissionHelper.has(writer, "iprofessions.whois.other", false))
+					{
+						this.sendPreMessage(writer, "have_perm");
+						return true;
+					}
+					
 					pFocus = this.getServer().getOfflinePlayer(args[0]);
 				}
 				
@@ -209,7 +220,6 @@ public class Plugin extends JavaPluginEnhancer {
 	public void onConfigurationDefault(FileConfiguration c) {
 		c.set("players", new HashMap<String, String>());
 		c.set("professions", new HashMap<String, String>());
-		
 	}
 
 	@Override

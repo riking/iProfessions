@@ -38,11 +38,11 @@ public class Plugin extends JavaPluginEnhancer {
 	@Override
 	public void onEnable()
 	{
-		this.setup("iProfessions", ChatColor.BLUE + "[iProfessions]", "iprofessions", true);
+		this.setup(ChatColor.BLUE + "[iProfessions]", "iprofessions", true);
 		Plugin.instance = this;
 
 		myLog.startFrame();
-		myLog.addInFrame(this.name + " by Ptibiscuit");
+		myLog.addInFrame("iProfessions by Ptibiscuit");
 		
 		data = new YamlData();
 		data.loadProfessions();
@@ -83,7 +83,7 @@ public class Plugin extends JavaPluginEnhancer {
 				Profession p = data.getProfession(args[0]);
 				if (p != null)
 				{
-					if (!PermissionHelper.has(writer, this.prefixPermissions + ".learn." + args[0], false))
+					if (!this.getPermissionHandler().has(writer, "learn." + args[0], false))
 					{
 						this.sendPreMessage(writer, "have_perm");
 						return true;
@@ -97,7 +97,7 @@ public class Plugin extends JavaPluginEnhancer {
 			}
 			else if (label.equalsIgnoreCase("pforget"))
 			{
-				if (!PermissionHelper.has(writer, this.prefixPermissions + ".forget", false))
+				if (!this.getPermissionHandler().has(writer, "forget", false))
 				{
 					this.sendPreMessage(writer, "have_perm");
 					return true;
@@ -108,7 +108,7 @@ public class Plugin extends JavaPluginEnhancer {
 			}
 			else if (label.equalsIgnoreCase("psetuser"))
 			{
-				if (!PermissionHelper.has(writer, this.prefixPermissions + ".setuser", false))
+				if (!this.getPermissionHandler().has(writer, "setuser", true))
 				{
 					this.sendPreMessage(writer, "have_perm");
 					return true;
@@ -138,7 +138,7 @@ public class Plugin extends JavaPluginEnhancer {
 				OfflinePlayer pFocus;
 				if (args.length == 0)
 				{
-					if (!PermissionHelper.has(writer, "iprofessions.whois.self", false))
+					if (!this.getPermissionHandler().has(writer, "whois.self", false))
 					{
 						this.sendPreMessage(writer, "have_perm");
 						return true;
@@ -147,7 +147,7 @@ public class Plugin extends JavaPluginEnhancer {
 				}
 				else
 				{
-					if (!PermissionHelper.has(writer, "iprofessions.whois.other", false))
+					if (!this.getPermissionHandler().has(writer, "whois.other", false))
 					{
 						this.sendPreMessage(writer, "have_perm");
 						return true;
@@ -236,6 +236,7 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("fail_pprof", "Impossible de trouver le fichier de joueur.");
 		p.put("succ_pprof", "Fichier de professions de joueurs correctement chargé !");
 		p.put("get_prof", "Vous êtes dorénavent un {NAME}");
+		p.put("forget_succ", "Vous avez oublié votre métier !");
 		p.put("have_perm", "Vous n'avez pas la permission de faire ceci.");
 		p.put("run_as_player", "Cette commande doit être faites en jeu.");
 		p.put("unknown_tag", "Tag de profession inconnue.");

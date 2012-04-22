@@ -1,6 +1,5 @@
 package com.ptibiscuit.iprofession.listeners;
 
-import com.ptibiscuit.framework.PermissionHelper;
 import com.ptibiscuit.iprofession.Plugin;
 import com.ptibiscuit.iprofession.data.models.Skill;
 import com.ptibiscuit.iprofession.data.models.TypeSkill;
@@ -25,7 +24,7 @@ public class SkillManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent e) {
-		if (PermissionHelper.has(e.getPlayer(), "iprofessions.god", true))
+		if (Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "god", true))
 			return;
 		
 		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
@@ -45,7 +44,7 @@ public class SkillManager implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent e) {
-		if (PermissionHelper.has(e.getPlayer(), "iprofessions.god", true))
+		if (Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "god", true))
 			return;
 		
 		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
@@ -65,7 +64,7 @@ public class SkillManager implements Listener {
 		if (e.getView().getPlayer() != null && e.getView().getPlayer() instanceof Player)
 		{
 			Player p = (Player) e.getView().getPlayer();
-			if (PermissionHelper.has(p, "iprofessions.god", true))
+			if (Plugin.getInstance().getPermissionHandler().has(p, "god", true))
 				return;
 			Skill s = Plugin.getInstance().getSkill(e.getRecipe().getResult().getTypeId(), TypeSkill.CRAFT);
 			if (s != null)
@@ -82,7 +81,7 @@ public class SkillManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent e)
 	{
-		if (PermissionHelper.has(e.getPlayer(), "iprofessions.god", true))
+		if (Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "god", true))
 			return;
 		if (e.isCancelled())
 			return;
@@ -108,7 +107,7 @@ public class SkillManager implements Listener {
 		if (e.getWhoClicked() != null && e.getWhoClicked() instanceof Player)
 		{
 			Player p = (Player) e.getWhoClicked();
-			if (PermissionHelper.has(p, "iprofessions.god", true))
+			if (Plugin.getInstance().getPermissionHandler().has(p, "god", true))
 				return;
 			if (e.getInventory() instanceof FurnaceInventory && e.getSlotType() == SlotType.CONTAINER && e.getSlot() == 0)
 			{

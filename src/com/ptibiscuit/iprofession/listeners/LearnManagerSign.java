@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ptibiscuit.iprofession.listeners;
 
-import com.ptibiscuit.framework.PermissionHelper;
 import com.ptibiscuit.iprofession.Plugin;
 import com.ptibiscuit.iprofession.data.models.Profession;
 import org.bukkit.Material;
@@ -16,10 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-/**
- *
- * @author ANNA
- */
 public class LearnManagerSign implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent e)
@@ -36,7 +27,7 @@ public class LearnManagerSign implements Listener {
 					Profession p = Plugin.getData().getProfession(data[1]);
 					if (p != null)
 					{
-						if (!PermissionHelper.has(e.getPlayer(), "iprofessions.learn." + p.getTag(), true))
+						if (!Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "learn." + p.getTag(), true))
 						{
 							Plugin.getInstance().sendPreMessage(e.getPlayer(), "have_perm");
 							e.setCancelled(true);
@@ -56,11 +47,10 @@ public class LearnManagerSign implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onSignChange(SignChangeEvent e)
 	{
-		if (e.getLine(0).contains("[iProfessions]") && !PermissionHelper.has(e.getPlayer(), "iprofessions.sign.create", true))
+		if (e.getLine(0).contains("[iProfessions]") && !Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "sign.create", true))
 		{
 			Plugin.getInstance().sendPreMessage(e.getPlayer(), "have_perm");
 			e.setCancelled(true);
-			return;
 		}
 	}
 }

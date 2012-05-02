@@ -4,12 +4,18 @@ import com.ptibiscuit.iprofession.data.models.TypeSkill;
 
 public class Skill {
 	private int id;
+	private int metaData;
 	private TypeSkill type;
 	private String notHave;
+
+	public int getMetaData() {
+		return metaData;
+	}
 	
-	public Skill(int id, TypeSkill t)
+	public Skill(int id, int metaData, TypeSkill t)
 	{
 		this.id = id;
+		this.metaData = metaData;
 		this.type = t;
 	}
 
@@ -19,10 +25,7 @@ public class Skill {
 
 	public boolean equals(Skill s)
 	{
-		if (s.getType() == this.getType() && s.getId() == this.getId())
-			return true;
-			
-		return false;
+		return (s.getType() == this.getType() && s.getMetaData() == this.metaData && s.getId() == this.getId());
 	}
 	
 	public TypeSkill getType() {

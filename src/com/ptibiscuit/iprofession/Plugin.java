@@ -62,7 +62,6 @@ public class Plugin extends JavaPluginEnhancer {
 		PluginManager pManager = this.getServer().getPluginManager();
 		pManager.registerEvents(this.sm, this);
 		pManager.registerEvents(this.lms, this);
-		
 		myLog.displayFrame(false);
 	}
 
@@ -249,12 +248,18 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("whois_first", " Profession: {PROFESSION}");
 	}
 	
-	public Skill getSkill(int id, TypeSkill ts)
+	public Skill getSkill(int id, int metaData, TypeSkill ts)
 	{
-		Skill fakeSk = new Skill(id, ts);
+		Skill fakeSk = new Skill(id, metaData, ts);
 		for (Profession p : data.getProfessions())
 			for (Skill s : p.getSkills())
 				if (s.equals(fakeSk))
+					return s;
+		// Maintenant, on regarde si on n'a pas la compétence en globale
+		Skill fakeGlobalSk = new Skill(id, -1, ts);
+		for (Profession p : data.getProfessions())
+			for (Skill s : p.getSkills())
+				if (s.equals(fakeGlobalSk))
 					return s;
 		return null;
 	}
@@ -262,11 +267,7 @@ public class Plugin extends JavaPluginEnhancer {
 	public boolean hasSkill(Player pl, Skill s)
 	{
 		Profession p = data.getProfessionByPlayer(pl.getName());
-		if ((p != null && p.hasSkill(s)))
-		{
-			return true;
-		}
-		return false;
+		return (p != null && p.hasSkill(s));
 	}
 	
 	public boolean isALearnableSkill(Skill s)

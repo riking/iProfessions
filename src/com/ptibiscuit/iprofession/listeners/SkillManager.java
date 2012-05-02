@@ -26,10 +26,11 @@ public class SkillManager implements Listener {
 	public void onBlockBreak(BlockBreakEvent e) {
 		if (Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "god", true))
 			return;
-		
-		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
+		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), e.getBlock().getData(), TypeSkill.BREAK);
+		System.out.println(e.getBlock().getData());
 		if (s != null)
 		{
+			System.out.println(s.getMetaData());
 			if (!Plugin.getInstance().hasSkill(e.getPlayer(), s))
 			{
 				if (!this.ignoredBlocks.contains(e.getBlock().getLocation()))
@@ -47,7 +48,7 @@ public class SkillManager implements Listener {
 		if (Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "god", true))
 			return;
 		
-		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), TypeSkill.BREAK);
+		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), e.getBlock().getData(), TypeSkill.BREAK);
 		if (s != null)
 		{
 			if (!Plugin.getInstance().hasSkill(e.getPlayer(), s))
@@ -66,7 +67,8 @@ public class SkillManager implements Listener {
 			Player p = (Player) e.getView().getPlayer();
 			if (Plugin.getInstance().getPermissionHandler().has(p, "god", true))
 				return;
-			Skill s = Plugin.getInstance().getSkill(e.getRecipe().getResult().getTypeId(), TypeSkill.CRAFT);
+			ItemStack item = e.getRecipe().getResult();
+			Skill s = Plugin.getInstance().getSkill(item.getTypeId(), item.getData().getData(), TypeSkill.CRAFT);
 			if (s != null)
 			{
 				if (!Plugin.getInstance().hasSkill(p, s))
@@ -87,7 +89,7 @@ public class SkillManager implements Listener {
 			return;
 		if (e.getItem() != null)
 		{
-			Skill s = Plugin.getInstance().getSkill(e.getItem().getTypeId(), TypeSkill.USE);
+			Skill s = Plugin.getInstance().getSkill(e.getItem().getTypeId(), e.getItem().getData().getData(), TypeSkill.USE);
 			if (s != null)
 			{
 				
@@ -112,7 +114,7 @@ public class SkillManager implements Listener {
 			if (e.getInventory() instanceof FurnaceInventory && e.getSlotType() == SlotType.CONTAINER && e.getSlot() == 0)
 			{
 				// On a affaire à quelqu'un qui veut mettre un objet dans le four pour le fondre. On s'en occupe, cap'tain
-				Skill s = Plugin.getInstance().getSkill(e.getCursor().getTypeId(), TypeSkill.SMELT);
+				Skill s = Plugin.getInstance().getSkill(e.getCursor().getTypeId(), e.getCursor().getData().getData(), TypeSkill.SMELT);
 				if (s != null)
 				{
 					if (!Plugin.getInstance().hasSkill(p, s))

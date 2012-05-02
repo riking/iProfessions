@@ -86,8 +86,12 @@ public class YamlData implements IData {
 						String[] ids = dataSkill.get("id").toString().split(","); 
 						for (String Sid : ids)
 						{
-							int id = new Integer(Sid);
-							Skill sk = new Skill(id, type);
+							String[] dataIdSkill = Sid.split("-");
+							int id = new Integer(dataIdSkill[0]);
+							int metaData = -1;
+							if (dataIdSkill.length > 1)
+								metaData = new Integer(dataIdSkill[1]);
+							Skill sk = new Skill(id, metaData, type);
 							sk.setNotHave(exply);
 							skills.add(sk);
 						}

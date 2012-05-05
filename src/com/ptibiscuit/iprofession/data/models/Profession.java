@@ -1,22 +1,22 @@
 package com.ptibiscuit.iprofession.data.models;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.ArrayList;
-import org.bukkit.entity.Player;
 
 public class Profession {
 	private String name;
 	private String tag;
 	private ArrayList<Skill> skills = new ArrayList<Skill>();
+	private int price;
 	private Profession parent;
 	
 	private ArrayList<Require> prerequis = new ArrayList<Require>();
 	
-	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis, Profession parent)
+	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis, Profession parent, int price)
 	{
 		this.name = name;
 		this.skills = skills;
 		this.tag = tag;
+		this.price = price;
 		this.prerequis = prerequis;
 		this.parent = parent;
 	}
@@ -56,6 +56,10 @@ public class Profession {
 
 	public ArrayList<Require> getRequired() {
 		return prerequis;
+	}
+
+	public int getPrice() {
+		return price;
 	}
 
 	@Override

@@ -67,6 +67,10 @@ public class YamlData implements IData {
 					prerequis.add(r);
 				}
 			}
+			// Pour le prix
+			int price = 0;
+			if (data.get("price") != null)
+				price = data.getInt("price");
 			// On va cherche la liste des skills
 			ConfigurationSection dataSkills = data.getConfigurationSection("skills");
 			
@@ -109,7 +113,7 @@ public class YamlData implements IData {
 				else
 					Plugin.getInstance().getMyLogger().warning("The parent of " + tag + ", " + tagParent + " is unkwown; Are you sure of you ?");
 			}
-			professions.add(new Profession(tag, name, skills, prerequis, parent));
+			professions.add(new Profession(tag, name, skills, prerequis, parent, price));
 		}
 	}
 	

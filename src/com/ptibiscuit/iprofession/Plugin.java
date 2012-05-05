@@ -14,6 +14,7 @@ import java.util.Properties;
 import me.tehbeard.BeardStat.BeardStat;
 import me.tehbeard.BeardStat.containers.PlayerStatBlob;
 import me.tehbeard.BeardStat.containers.PlayerStatManager;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -21,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Plugin extends JavaPluginEnhancer {
@@ -50,13 +52,14 @@ public class Plugin extends JavaPluginEnhancer {
 		data.loadPlayersProfessions();
 		
 		if (this.setupStats())
-		{
 			myLog.addInFrame("Stats detected, you can use the required field !");
-		}
 		else
-		{
 			myLog.addInFrame("Stats not detected.");
-		}
+		
+		if (this.setupEconomy())
+			myLog.addInFrame("Economy detected, you can use the price field !");
+		else
+			myLog.addInFrame("Economy not detected, too bad !");
 		
 		// On active nos listeners
 		PluginManager pManager = this.getServer().getPluginManager();
@@ -70,7 +73,7 @@ public class Plugin extends JavaPluginEnhancer {
 	{
 		if (!(sender instanceof Player))
 		{
-			sender.sendMessage("[iPermissions] " + this.getSentence("run_as_player"));
+			sender.sendMessage("[iProfessions] " + this.getSentence("run_as_player"));
 			return true;
 		}
 		Player writer = (Player) sender;
@@ -193,6 +196,18 @@ public class Plugin extends JavaPluginEnhancer {
 			}
 		}
 		if (!problem) {
+			// On regarde si il a l'argent
+			if (p.getPrice() != 0 && this.isEconomyEnabled())
+			{
+				double moneyPlayer = this.economy.getBalance(writer.getName());
+				if (moneyPlayer >= p.getPrice()) {
+					this.economy.withdrawPlayer(writer.getName(), p.getPrice());
+				} else {
+					this.sendMessage(writer, getSentence("cant_afford").replace("{PRICE}", this.economy.format(p.getPrice())));
+					return false;
+				}
+				
+			}
 			Profession actualProfession = data.getProfessionByPlayer(writer.getName());
 			if (actualProfession == p.getParent())
 			{
@@ -244,6 +259,7 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("need_to_learn_parent_profession", "Vous devez d'abord apprendre une autre profession pour accéder à celle-ci");
 		p.put("whois_entete", ChatColor.GOLD + "Informations sur {PLAYER}:" + ChatColor.WHITE);
 		p.put("whois_first", " Profession: {PROFESSION}");
+		p.put("cant_afford", "You havn't enough money to learn this profession. You need {PRICE}.");
 	}
 	
 	public Skill getSkill(int id, int metaData, TypeSkill ts)
@@ -328,5 +344,29 @@ public class Plugin extends JavaPluginEnhancer {
 	public boolean isUsingStat()
 	{
 		return (this.statManager != null);
+	}
+	
+	/*
+	 * iConomySupport
+	 */
+	private Economy economy;
+	public boolean setupEconomy()
+	{
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		if (rsp == null) {
+			return false;
+		}
+		this.economy = rsp.getProvider();
+		return economy != null;
+	}
+	
+	public Economy getEconomy()
+	{
+		return this.economy;
+	}
+	
+	public boolean isEconomyEnabled()
+	{
+		return (this.economy != null);
 	}
 }

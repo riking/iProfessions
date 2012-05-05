@@ -33,25 +33,6 @@ public class Require {
 		return hasnot;
 	}
 
-	public boolean has(Player p)
-	{
-		if (!Plugin.getStatsHandler().isStatsEnabling())
-		{
-			return true;
-		}
-		
-		if (getRequired() > Plugin.getStatsHandler().getStat(p, getCategory(), getKey()))
-		{
-			return false;
-		}
-		return true;
-	}
-	
-	public int getHowManyPointNeedToComplete(Player p)
-	{
-		return getRequired() - Plugin.getStatsHandler().getStat(p, getCategory(), getKey());
-	}
-
 	public void setHasnot(String hasnot) {
 		this.hasnot = hasnot;
 	}

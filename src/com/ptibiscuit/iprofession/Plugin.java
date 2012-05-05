@@ -1,9 +1,7 @@
 package com.ptibiscuit.iprofession;
 
 import com.ptibiscuit.framework.JavaPluginEnhancer;
-import com.ptibiscuit.framework.PermissionHelper;
 import com.ptibiscuit.iprofession.data.IData;
-import com.ptibiscuit.iprofession.data.StatsHandler;
 import com.ptibiscuit.iprofession.data.YamlData;
 import com.ptibiscuit.iprofession.data.models.Profession;
 import com.ptibiscuit.iprofession.data.models.Require;
@@ -11,9 +9,11 @@ import com.ptibiscuit.iprofession.data.models.Skill;
 import com.ptibiscuit.iprofession.data.models.TypeSkill;
 import com.ptibiscuit.iprofession.listeners.LearnManagerSign;
 import com.ptibiscuit.iprofession.listeners.SkillManager;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
+import me.tehbeard.BeardStat.BeardStat;
+import me.tehbeard.BeardStat.containers.PlayerStatBlob;
+import me.tehbeard.BeardStat.containers.PlayerStatManager;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -21,11 +21,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Plugin extends JavaPluginEnhancer {
 
 	private static Plugin instance;
-	private static StatsHandler stats = new StatsHandler();
 	private SkillManager sm = new SkillManager();
 	private LearnManagerSign lms = new LearnManagerSign();
 	private static IData data;
@@ -49,7 +49,7 @@ public class Plugin extends JavaPluginEnhancer {
 		myLog.addInFrame(data.getProfessions().size() + " professions loaded !");
 		data.loadPlayersProfessions();
 		
-		if (stats.setupStats(this.getServer()))
+		if (this.setupStats())
 		{
 			myLog.addInFrame("Stats detected, you can use the required field !");
 		}
@@ -180,9 +180,19 @@ public class Plugin extends JavaPluginEnhancer {
 
 	public boolean tryToLearn(Player writer, Profession p)
 	{
-		ArrayList<Require> rqire = p.canLearn(writer);
-		if (rqire.isEmpty())
+		// problem est passé à true quand un des required n'est pas bon.
+		boolean problem = false;
+		for (Require r : p.getRequired())
 		{
+			int requiredLeft = this.hasRequire(writer.getName(), r);
+			if (requiredLeft > 0)
+			{
+				// On affiche le problème
+				this.sendMessage(writer, r.getHasnot().replace("{LEFT}", String.valueOf(requiredLeft)));
+				problem = true;
+			}
+		}
+		if (!problem) {
 			Profession actualProfession = data.getProfessionByPlayer(writer.getName());
 			if (actualProfession == p.getParent())
 			{
@@ -200,19 +210,7 @@ public class Plugin extends JavaPluginEnhancer {
 					this.sendPreMessage(writer, "need_to_learn_parent_profession");
 			}
 		}
-		else
-		{
-			for (Require r : rqire)
-			{
-				String message = r.getHasnot();
-				this.sendMessage(writer, message.replace("{LEFT}", String.valueOf(r.getHowManyPointNeedToComplete(writer))));
-			}
-		}
 		return false;
-	}
-	
-	public static StatsHandler getStatsHandler() {
-		return stats;
 	}
 
 	@Override
@@ -288,5 +286,47 @@ public class Plugin extends JavaPluginEnhancer {
 
 	public static IData getData() {
 		return data;
+	}
+	
+	/*
+	 * All about BeardStat handling
+	 */
+	private PlayerStatManager statManager;
+	public boolean setupStats()
+	{
+		JavaPlugin plug = (JavaPlugin) this.getServer().getPluginManager().getPlugin("BeardStat");
+		if (plug == null)
+			return false;
+		this.statManager = ((BeardStat) plug).getStatManager();
+		return true;
+	}
+	/*
+	 * It seems weird, but this function returned the difference between the required and the actual stat. If it's positive,
+	 * it means that it hasn't the required (Cause required would be higher than the actual)
+	 */
+	public int hasRequire(String playername, Require req)
+	{
+		return req.getRequired() - this.getStatValue(playername, req.getCategory(), req.getKey());
+	}
+	
+	public int getStatValue(String playerName, String cat, String stat)
+	{
+		if (isUsingStat())
+		{
+			PlayerStatBlob playerStat = this.statManager.findPlayerBlob(playerName);
+			if (playerStat != null) {
+				if (playerStat.hasStat(cat, stat)) {
+					return playerStat.getStat(cat, stat).getValue();
+				} else {
+					this.myLog.warning("You're using a stat that doesn't exist: " + cat + "-" + stat);
+				}
+			}
+		}
+		return 0;
+	}
+	
+	public boolean isUsingStat()
+	{
+		return (this.statManager != null);
 	}
 }

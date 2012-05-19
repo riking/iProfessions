@@ -17,7 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class YamlData implements IData {
 	private ArrayList<Profession> professions = new ArrayList<Profession>();
-	private HashMap<String, Profession> playersProfessions = new HashMap<String, Profession>();
+	private HashMap<String, ArrayList<Profession>> playersProfessions = new HashMap<String, ArrayList<Profession>>();
 	
 	@Override
 	public void loadProfessions()
@@ -29,7 +29,10 @@ public class YamlData implements IData {
 		{
 			/* Voici donc l'architecture d'une classe
 			 * players:
-			 *   [player]: [profession]
+			 *   [player]:
+			 *     profession:
+			 *     - miner
+			 *     - girl_thing
 			 * professions:
 				* [tag]:
 				*   name: [name]
@@ -117,6 +120,7 @@ public class YamlData implements IData {
 		}
 	}
 	
+	@Override
 	public void loadPlayersProfessions()
 	{
 		Plugin p = Plugin.getInstance();
@@ -125,31 +129,41 @@ public class YamlData implements IData {
 			return;
 		for (Entry<String, Object> e : cs.getValues(false).entrySet())
 		{
-			String profession = e.getValue().toString();
-			Profession prof = this.getProfession(profession);
-			if (prof != null)
-			{
-				this.playersProfessions.put(e.getKey(), prof);
+			ConfigurationSection csPlayer = (ConfigurationSection) e.getValue();
+			String playerName = e.getKey();
+			List<String> listProfessionsTag = csPlayer.getStringList("professions");
+			ArrayList listProfessions = new ArrayList<Profession>();
+			for (String professionsTag : listProfessionsTag) {
+				
+				Profession prof = this.getProfession(professionsTag);
+				if (prof != null) {
+					listProfessions.add(prof);
+				} else {
+					Plugin.getInstance().getMyLogger().warning(e.getKey() + " has a non existing profession. (" + professionsTag + ")");
+				}
 			}
-			else
-			{
-				Plugin.getInstance().getMyLogger().warning(e.getKey() + " has a non existing profession. (" + profession + ")");
-			}
+			this.playersProfessions.put(playerName, listProfessions);
+			
 		}
 	}
 	
-	public Profession getProfessionByPlayer(String s)
+	@Override
+	public ArrayList<Profession> getProfessionByPlayer(String s)
 	{
-		return playersProfessions.get(s);
+		ArrayList<Profession> pps = playersProfessions.get(s);
+		return (pps != null) ? pps : new ArrayList<Profession>();
 	}
 	
 	@Override
 	public void save()
 	{
-		HashMap<String, String> transition = new HashMap<String, String>();
-		for (Entry<String, Profession> e : this.playersProfessions.entrySet())
-			transition.put(e.getKey(), e.getValue().getTag());
-		Plugin.getInstance().getConfig().set("players", transition);
+		for (Entry<String, ArrayList<Profession>> e : this.playersProfessions.entrySet()) {
+			ArrayList<String> professionsTagList = new ArrayList<String>();
+			for (Profession p : e.getValue()) {
+				professionsTagList.add(p.getTag());
+			}
+			Plugin.getInstance().getConfig().set("players." + e.getKey() + "professions", professionsTagList);
+		}
 		Plugin.getInstance().saveConfig();
 	}
 	
@@ -172,12 +186,12 @@ public class YamlData implements IData {
 	}
 
 	@Override
-	public HashMap<String, Profession> getProfessionPlayers() {
+	public HashMap<String, ArrayList<Profession>> getProfessionPlayers() {
 		return this.playersProfessions;
 	}
 
 	@Override
-	public void setPlayerProfession(String player, Profession profession) {
+	public void setPlayerProfession(String player, ArrayList<Profession> profession) {
 		if (profession != null)
 			playersProfessions.put(player, profession);
 		else

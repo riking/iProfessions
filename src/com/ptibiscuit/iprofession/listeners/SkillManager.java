@@ -27,10 +27,8 @@ public class SkillManager implements Listener {
 		if (Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "god", true))
 			return;
 		Skill s = Plugin.getInstance().getSkill(e.getBlock().getTypeId(), e.getBlock().getData(), TypeSkill.BREAK);
-		System.out.println(e.getBlock().getData());
 		if (s != null)
 		{
-			System.out.println(s.getMetaData());
 			if (!Plugin.getInstance().hasSkill(e.getPlayer(), s))
 			{
 				if (!this.ignoredBlocks.contains(e.getBlock().getLocation()))

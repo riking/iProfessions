@@ -1,6 +1,6 @@
 name: iProfessions
 main: com.ptibiscuit.iprofession.Plugin
-version: 1.9
+version: 1.9.1
 depend: [PluginsBaker]
 softepend: [BeardStat]
 authors:
@@ -12,9 +12,12 @@ commands:
   pforget:
     description: Forget your profession.
     usage: /pforget
-  psetuser:
-    description: Set a profession to a player
-    usage: /pset <Player> <Profession>
+  premprofuser:
+    description: Remove a profession to a user.
+    usage: /premprofuser <Player> <Profession>
+  paddprofuser:
+    description: Add a profession to a user.
+    usage: /paddprofuser <Player> <Profession>
   pwhois:
     description: Set a profession to a player
     usage: /pwhois [Player]

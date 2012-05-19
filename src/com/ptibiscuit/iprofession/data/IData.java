@@ -13,9 +13,9 @@ public interface IData {
 	public void loadPlayersProfessions();
 	public ArrayList<Profession> getProfessions();
 	public Profession getProfession(String tag);
-	public Profession getProfessionByPlayer(String player);
-	public HashMap<String, Profession> getProfessionPlayers();
-	public void setPlayerProfession(String player, Profession profession);
+	public ArrayList<Profession> getProfessionByPlayer(String player);
+	public HashMap<String, ArrayList<Profession>> getProfessionPlayers();
+	public void setPlayerProfession(String player, ArrayList<Profession> profession);
 	public void save();
 	
 }

@@ -8,10 +8,10 @@ authors:
 commands:
   plearn:
     description: Usefull to learn a profession.
-    usage: /plearn <Player>
+    usage: /plearn <Profession>
   pforget:
     description: Forget your profession.
-    usage: /pforget
+    usage: /pforget <Profession>
   premprofuser:
     description: Remove a profession to a user.
     usage: /premprofuser <Player> <Profession>

@@ -8,13 +8,16 @@ authors:
 commands:
   plearn:
     description: Usefull to learn a profession.
-    usage: /plearn <Player>
+    usage: /plearn <Profession>
   pforget:
     description: Forget your profession.
-    usage: /pforget
-  psetuser:
-    description: Set a profession to a player
-    usage: /pset <Player> <Profession>
+    usage: /pforget <Profession>
+  premprofuser:
+    description: Remove a profession to a user.
+    usage: /premprofuser <Player> <Profession>
+  paddprofuser:
+    description: Add a profession to a user.
+    usage: /paddprofuser <Player> <Profession>
   pwhois:
     description: Set a profession to a player
     usage: /pwhois [Player]

@@ -93,21 +93,28 @@ public class Plugin extends JavaPluginEnhancer {
 					}
 					this.tryToLearn(writer, p);
 				}
-				else
+				else if (true)
 				{
 					this.sendPreMessage(writer, "unknown_tag");
 				}
 			}
 			else if (label.equalsIgnoreCase("pforget"))
 			{
-				if (!this.getPermissionHandler().has(writer, "forget", false))
-				{
-					this.sendPreMessage(writer, "have_perm");
-					return true;
+				
+				
+				Profession p = data.getProfession(args[0]);
+				if (p != null) {
+					ArrayList<Profession> playerProfs = this.data.getProfessionByPlayer(writer.getName());
+					if (playerProfs.contains(p)) {
+						playerProfs.remove(p);
+						this.data.setPlayerProfession(writer.getName(), playerProfs);
+						this.sendPreMessage(writer, "forget_succ");
+					} else {
+						this.sendMessage(sender, this.getSentence("havnt_profession"));
+					}
+				} else {
+					this.sendPreMessage(writer, "unknown_tag");
 				}
-
-				this.data.setPlayerProfession(writer.getName(), null);
-				this.sendPreMessage(writer, "forget_succ");
 			}
 			else if (label.equalsIgnoreCase("paddprofuser"))
 			{
@@ -148,7 +155,7 @@ public class Plugin extends JavaPluginEnhancer {
 					{
 						ArrayList<Profession> playerProfs = this.data.getProfessionByPlayer(args[0]);
 						if (playerProfs.contains(p)) {
-							playerProfs.add(p);
+							playerProfs.remove(p);
 							this.data.setPlayerProfession(args[0], playerProfs);
 							this.sendMessage(sender, this.getSentence("profession_removed")
 									  .replace("{PLAYER}", player.getName()));
@@ -330,6 +337,7 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("user_havnt_profession", "{PLAYER} doesn't have this profession.");
 		p.put("profession_removed", "{PLAYER} has forget this profession !");
 		p.put("cant_learn_more_prof", "You can't learn more profession.");
+		p.put("havnt_profession", "You havn't this profession.");
 	}
 	
 	public Skill getSkill(int id, int metaData, TypeSkill ts)

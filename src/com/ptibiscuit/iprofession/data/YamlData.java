@@ -162,7 +162,7 @@ public class YamlData implements IData {
 			for (Profession p : e.getValue()) {
 				professionsTagList.add(p.getTag());
 			}
-			Plugin.getInstance().getConfig().set("players." + e.getKey() + "professions", professionsTagList);
+			Plugin.getInstance().getConfig().set("players." + e.getKey() + ".professions", professionsTagList);
 		}
 		Plugin.getInstance().saveConfig();
 	}

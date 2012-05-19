@@ -323,7 +323,6 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("unknown_tag", "Tag de profession inconnue.");
 		p.put("fake_tag_prof", "Un tag de profession du fichier professions.yml n'existe pas.");
 		p.put("player_unknown", "Ce joueur n'existe pas.");
-		p.put("setuser_succ", "Vous avez bourré le crane de {PLAYER} en lui apprenant \"{PROFESSION}\"");
 		p.put("need_to_learn_parent_profession", "Vous devez d'abord apprendre une autre profession pour accéder à celle-ci");
 		p.put("whois_entete", ChatColor.GOLD + "Informations sur {PLAYER}:" + ChatColor.WHITE);
 		p.put("whois_first", " Profession: {PROFESSION}");

@@ -281,7 +281,7 @@ public class Plugin extends JavaPluginEnhancer {
 			ArrayList<Profession> actualProfession = data.getProfessionByPlayer(writer.getName());
 			if (p.getParent() == null) {
 				// Il ne lui faut qu'une place de libre dans ses professions !
-				if (true) {
+				if (actualProfession.size() < this.getConfig().getInt("config.max_profession")) {
 					actualProfession.add(p);
 					data.setPlayerProfession(writer.getName(), actualProfession);
 					return true;
@@ -306,6 +306,7 @@ public class Plugin extends JavaPluginEnhancer {
 
 	@Override
 	public void onConfigurationDefault(FileConfiguration c) {
+		c.set("config.max_profession", 1);
 		c.set("players", new HashMap<String, String>());
 		c.set("professions", new HashMap<String, String>());
 	}

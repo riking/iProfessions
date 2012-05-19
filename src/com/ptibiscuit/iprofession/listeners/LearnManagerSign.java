@@ -27,7 +27,7 @@ public class LearnManagerSign implements Listener {
 					Profession p = Plugin.getData().getProfession(data[1]);
 					if (p != null)
 					{
-						if (!Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "learn." + p.getTag(), true))
+						if (!Plugin.getInstance().getPermissionHandler().has(e.getPlayer(), "sign.learn." + p.getTag(), true))
 						{
 							Plugin.getInstance().sendPreMessage(e.getPlayer(), "have_perm");
 							e.setCancelled(true);

@@ -308,6 +308,7 @@ public class Plugin extends JavaPluginEnhancer {
 					actualProfession.remove(p.getParent());
 					actualProfession.add(p);
 					data.setPlayerProfession(writer.getName(), actualProfession);
+					this.sendPreMessage(writer, "profession_learnt");
 					return true;
 				} else {
 					this.sendPreMessage(writer, "need_to_learn_parent_profession");

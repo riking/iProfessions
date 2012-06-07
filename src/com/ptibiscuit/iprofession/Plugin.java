@@ -296,7 +296,7 @@ public class Plugin extends JavaPluginEnhancer {
 				if (actualProfession.size() < this.getConfig().getInt("config.max_profession")) {
 					actualProfession.add(p);
 					data.setPlayerProfession(writer.getName(), actualProfession);
-					
+					this.sendPreMessage(writer, "profession_learnt");
 					return true;
 				} else {
 					this.sendPreMessage(writer, "cant_learn_more_prof");

@@ -49,7 +49,27 @@ public class Profession {
 	public String getTag() {
 		return tag;
 	}
-
+	
+	public boolean isInTheSameTree(Profession other) {
+		// On regarde si en faisant l'iteration des parents de l'un des 2, on tombe sur l'autre.
+		Profession localParent = other;
+		while (localParent != null) {
+			if (localParent == this)
+				return true;
+			localParent = localParent.getParent();
+		}
+		
+		// Maintenant, en partant de this
+		localParent = this.getParent();
+		while (localParent != null) {
+			if (localParent == other)
+				return true;
+			localParent = localParent.getParent();
+		}
+		
+		return false;
+	}
+	
 	public ArrayList<Skill> getSkills() {
 		return skills;
 	}

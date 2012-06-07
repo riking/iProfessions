@@ -3,14 +3,12 @@ package com.ptibiscuit.iprofession;
 import com.ptibiscuit.framework.JavaPluginEnhancer;
 import com.ptibiscuit.iprofession.data.IData;
 import com.ptibiscuit.iprofession.data.YamlData;
-import com.ptibiscuit.iprofession.data.models.Profession;
-import com.ptibiscuit.iprofession.data.models.Require;
-import com.ptibiscuit.iprofession.data.models.Skill;
-import com.ptibiscuit.iprofession.data.models.TypeSkill;
+import com.ptibiscuit.iprofession.data.models.*;
 import com.ptibiscuit.iprofession.listeners.LearnManagerSign;
 import com.ptibiscuit.iprofession.listeners.SkillManager;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import me.tehbeard.BeardStat.BeardStat;
 import me.tehbeard.BeardStat.containers.PlayerStatBlob;
@@ -20,11 +18,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
 
 public class Plugin extends JavaPluginEnhancer {
 
@@ -32,6 +33,7 @@ public class Plugin extends JavaPluginEnhancer {
 	private SkillManager sm = new SkillManager();
 	private LearnManagerSign lms = new LearnManagerSign();
 	private static IData data;
+	private ArrayList<ProfessionGroup> professionGroups = new ArrayList<ProfessionGroup>();
 	
 	@Override
 	public void onDisable() 
@@ -51,7 +53,16 @@ public class Plugin extends JavaPluginEnhancer {
 		data.loadProfessions();
 		myLog.addInFrame(data.getProfessions().size() + " professions loaded !");
 		data.loadPlayersProfessions();
-		
+		// Loading group of professions.
+		for (Map<?, ?> dataGroup : this.getConfig().getMapList("config.profession_groups")) {
+			int count = (Integer) dataGroup.get("max_profession");
+			ArrayList<String> professionsTag = (ArrayList<String>) dataGroup.get("professions");
+			ArrayList<Profession> professions = new ArrayList<Profession>();
+			for (String pTag : professionsTag) {
+				professions.add(this.data.getProfession(pTag));
+			}
+			this.professionGroups.add(new ProfessionGroup(professions, count));
+		}
 		if (this.setupStats())
 			myLog.addInFrame("Stats detected, you can use the required field !");
 		else
@@ -100,7 +111,11 @@ public class Plugin extends JavaPluginEnhancer {
 			}
 			else if (label.equalsIgnoreCase("pforget"))
 			{
-				
+				if (!this.getPermissionHandler().has(writer, "forget", true))
+				{
+					this.sendPreMessage(writer, "have_perm");
+					return true;
+				}
 				
 				Profession p = data.getProfession(args[0]);
 				if (p != null) {
@@ -173,34 +188,6 @@ public class Plugin extends JavaPluginEnhancer {
 					this.sendPreMessage(writer, "unknown_tag");
 				}
 			}
-			/*
-			else if (label.equalsIgnoreCase("psetuser"))
-			{
-				if (!this.getPermissionHandler().has(writer, "setuser", true))
-				{
-					this.sendPreMessage(writer, "have_perm");
-					return true;
-				}
-				
-				Profession p = data.getProfession(args[1]);
-				if (p != null  || args[1].equalsIgnoreCase("null"))
-				{
-					OfflinePlayer player = this.getServer().getOfflinePlayer(args[0]);
-					if (player != null)
-					{
-						this.data.setPlayerProfession(player.getName(), p);
-						this.sendMessage(sender, this.getSentence("setuser_succ").replace("{PLAYER}", player.getName()).replace("{PROFESSION}", p.getName()));
-					}
-					else
-					{
-						this.sendPreMessage(sender, "player_unknown");
-					}
-				}
-				else
-				{
-					this.sendPreMessage(writer, "unknown_tag");
-				}
-			}*/
 			else if (label.equalsIgnoreCase("pwhois"))
 			{
 				OfflinePlayer pFocus;
@@ -253,6 +240,7 @@ public class Plugin extends JavaPluginEnhancer {
 
 	public boolean tryToLearn(Player writer, Profession p)
 	{
+		ArrayList<Profession> playerActualProfessions = this.data.getProfessionByPlayer(writer.getName());
 		// problem est passé à true quand un des required n'est pas bon.
 		boolean problem = false;
 		for (Require r : p.getRequired())
@@ -265,6 +253,30 @@ public class Plugin extends JavaPluginEnhancer {
 				problem = true;
 			}
 		}
+		// On vérifie si notre métier n'appartient pas à un groupe
+		ProfessionGroup pg = this.getGroupByProfession(p);
+		if (pg != null) {
+			// On regarde le nombre actuelle de métier qu'il a, il faut qu'il soit strictement
+			// inférieur au nombre maximal de métier dans cette catégorie.
+			if (!(pg.getContains(playerActualProfessions) < pg.getMaxProfessionsPerPlayer())) {
+				this.sendPreMessage(writer, "maximal_group_count_reached");
+				problem = true;
+			}
+		}
+		
+		// On vérifie qu'il n'a pas déjà un métier dans cet arbre. A ne faire seulement
+		// Seulement si c'est une profession première
+		if (p.getParent() == null) {
+			for (Profession prof : this.data.getProfessionByPlayer(writer.getName())) {
+				if (p.isInTheSameTree(prof)) {
+					this.sendPreMessage(writer, "already_prof_in_tree");
+					problem = true;
+				}
+			}
+		}
+		// On vérifie qu'il n'a pas déjà atteint le max de profession dans ce groupe.
+		//ProfessionGroup professionGroup = 
+		
 		if (!problem) {
 			// On regarde si il a l'argent
 			if (p.getPrice() != 0 && this.isEconomyEnabled())
@@ -284,6 +296,7 @@ public class Plugin extends JavaPluginEnhancer {
 				if (actualProfession.size() < this.getConfig().getInt("config.max_profession")) {
 					actualProfession.add(p);
 					data.setPlayerProfession(writer.getName(), actualProfession);
+					
 					return true;
 				} else {
 					this.sendPreMessage(writer, "cant_learn_more_prof");
@@ -303,42 +316,54 @@ public class Plugin extends JavaPluginEnhancer {
 		}
 		return false;
 	}
-
 	@Override
 	public void onConfigurationDefault(FileConfiguration c) {
 		c.set("config.max_profession", 1);
+		ArrayList<MemorySection> nodeGroups = new ArrayList<MemorySection>();
+		MemoryConfiguration defaultGroup = new MemoryConfiguration();
+		defaultGroup.set("max_profession", 1);
+		ArrayList<String> professions = new ArrayList<String>();
+		professions.add("farmer");
+		professions.add("miner");
+		professions.add("hunter");
+		defaultGroup.set("professions", professions);
+		nodeGroups.add(defaultGroup);
+		c.set("config.profession_groups", nodeGroups);
 		c.set("players", new HashMap<String, String>());
 		c.set("professions", new HashMap<String, String>());
 	}
 
 	@Override
 	public void onLangDefault(Properties p) {
-		p.put("fail_prof", "Impossible de charger le fichier de professions.");
-		p.put("new_file_prof", "Création d'un fichier de professions par défaut.");
-		p.put("succ_prof", "Fichier de professions correctement chargés !");
-		p.put("need_config", "Veuillez configurez vos classes avec le fichier professions.yml.");
-		p.put("new_file_lang", "Création d'un fichier de langues par défaut.");
-		p.put("fail_lang", "Impossible de trouver le fichier de langue.");
-		p.put("succ_lang", "Fichier de langue correctement chargé !");
+		/*p.put("fail_prof", "Can't load professions' file.");
+		p.put("new_file_prof", "Creatig a default professions' file.");
+		p.put("succ_prof", "Professions' file loaded !");
+		p.put("need_config", "You can now create your professions in config.yml file");
+		p.put("new_file_lang", "Creating a default lang file.");
+		p.put("fail_lang", "Can't load lang file.");
+		p.put("succ_lang", "Lang file loaded !");
 		p.put("fail_config", "Problème dans le chargement des fichiers de configurations.");
 		p.put("new_file_pprof", "Création d'un fichier de professions de joueurs par défaut.");
 		p.put("fail_pprof", "Impossible de trouver le fichier de joueur.");
-		p.put("succ_pprof", "Fichier de professions de joueurs correctement chargé !");
-		p.put("get_prof", "Vous êtes dorénavent un {NAME}");
-		p.put("forget_succ", "Vous avez oublié votre métier !");
-		p.put("have_perm", "Vous n'avez pas la permission de faire ceci.");
-		p.put("run_as_player", "Cette commande doit être faites en jeu.");
-		p.put("unknown_tag", "Tag de profession inconnue.");
-		p.put("fake_tag_prof", "Un tag de profession du fichier professions.yml n'existe pas.");
-		p.put("player_unknown", "Ce joueur n'existe pas.");
-		p.put("need_to_learn_parent_profession", "Vous devez d'abord apprendre une autre profession pour accéder à celle-ci");
-		p.put("whois_entete", ChatColor.GOLD + "Informations sur {PLAYER}:" + ChatColor.WHITE);
+		p.put("succ_pprof", "Fichier de professions de joueurs correctement chargé !");*/
+		p.put("get_prof", "Your have learn't the profession of {NAME}");
+		p.put("forget_succ", "You have forgotten your job !");
+		p.put("have_perm", "You're not able to do that.");
+		p.put("run_as_player", "This command has to be executed in game.");
+		p.put("unknown_tag", "Unknown profession's tag.");
+		//p.put("fake_tag_prof", "Un tag de profession du fichier professions.yml n'existe pas.");
+		p.put("player_unknown", "This player doesn't exist.");
+		p.put("profession_learnt", "You have learn't a new profession !");
+		p.put("need_to_learn_parent_profession", "You first have to learn the parent profession of this profession.");
+		p.put("whois_entete", ChatColor.GOLD + "Informations about {PLAYER}:" + ChatColor.WHITE);
 		p.put("whois_first", " Profession: {PROFESSION}");
 		p.put("cant_afford", "You havn't enough money to learn this profession. You need {PRICE}.");
 		p.put("user_havnt_profession", "{PLAYER} doesn't have this profession.");
 		p.put("profession_removed", "{PLAYER} has forget this profession !");
 		p.put("cant_learn_more_prof", "You can't learn more profession.");
 		p.put("havnt_profession", "You havn't this profession.");
+		p.put("already_prof_in_tree", "You have already learn't a profession in the same tree.");
+		p.put("maximal_group_count_reached", "You can't learn more profession of this group.");
 	}
 	
 	public Skill getSkill(int id, int metaData, TypeSkill ts)
@@ -446,6 +471,14 @@ public class Plugin extends JavaPluginEnhancer {
 	public Economy getEconomy()
 	{
 		return this.economy;
+	}
+	
+	public ProfessionGroup getGroupByProfession(Profession p) {
+		for (ProfessionGroup pg : this.professionGroups) {
+			if (pg.isInGroup(p))
+				return pg;
+		}
+		return null;
 	}
 	
 	public boolean isEconomyEnabled()

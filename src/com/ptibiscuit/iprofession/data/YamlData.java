@@ -3,14 +3,15 @@ package com.ptibiscuit.iprofession.data;
 import com.ptibiscuit.iprofession.Plugin;
 import com.ptibiscuit.iprofession.data.models.Profession;
 import com.ptibiscuit.iprofession.data.models.Require;
-import com.ptibiscuit.iprofession.data.models.Skill;
-import com.ptibiscuit.iprofession.data.models.TypeSkill;
+import com.ptibiscuit.iprofession.data.models.skill.Skill;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -77,34 +78,30 @@ public class YamlData implements IData {
 			// On va cherche la liste des skills
 			ConfigurationSection dataSkills = data.getConfigurationSection("skills");
 			
-			String[] types = new String[]{"useItem", "breakBlock", "craftItem", "smeltItem"};
-			TypeSkill[] typesSkill = new TypeSkill[]{TypeSkill.USE, TypeSkill.BREAK, TypeSkill.CRAFT, TypeSkill.SMELT};
-			
-			for (int i = 0;i < types.length;i++)
-			{
-				List<Map<?, ?>> dataTypeSkill = dataSkills.getMapList(types[i]);
+			// On va faire une boucle pour chaque type de skill qui existe
+			for (Entry<String, String> skillType : Skill.skillTypes.entrySet()) {
+				List<Map<?, ?>> dataTypeSkill = dataSkills.getMapList(skillType.getKey());
 				if (dataTypeSkill != null)
 				{
-					
 					for (Map<?, ?> dataSkill : dataTypeSkill)
 					{
-						String exply = dataSkill.get("hasnot").toString();
-						TypeSkill type = typesSkill[i];
-						String[] ids = dataSkill.get("id").toString().split(","); 
-						for (String Sid : ids)
-						{
-							String[] dataIdSkill = Sid.split("-");
-							int id = new Integer(dataIdSkill[0]);
-							int metaData = -1;
-							if (dataIdSkill.length > 1)
-								metaData = new Integer(dataIdSkill[1]);
-							Skill sk = new Skill(id, metaData, type);
-							sk.setNotHave(exply);
-							skills.add(sk);
+						Skill skill = null;
+						try {
+							skill = (Skill) Class.forName(skillType.getValue()).newInstance();
+						} catch (ClassNotFoundException ex) {
+							Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, null, ex);
+						} catch (InstantiationException ex) {
+							Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, null, ex);
+						} catch (IllegalAccessException ex) {
+							Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, null, ex);
 						}
+						skill.onEnable(dataSkill);
+						skills.add(skill);
+						
 					}
 				}
 			}
+	
 			// On va prendre la profession parent, ou null
 			Profession parent = null;
 			String tagParent = data.getString("parent");
@@ -146,6 +143,8 @@ public class YamlData implements IData {
 			
 		}
 	}
+	
+	
 	
 	@Override
 	public ArrayList<Profession> getProfessionByPlayer(String s)

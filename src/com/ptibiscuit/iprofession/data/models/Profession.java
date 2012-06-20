@@ -1,5 +1,6 @@
 package com.ptibiscuit.iprofession.data.models;
 
+import com.ptibiscuit.iprofession.data.models.skill.Skill;
 import java.util.ArrayList;
 
 public class Profession {
@@ -23,23 +24,7 @@ public class Profession {
 	
 	public boolean hasSkill(Skill sk)
 	{
-		// Si ca passe, cela veut dire que notre skill avait une particularité. On va donc en créer un global
-		Skill globalSkill = null;
-		if (sk.getMetaData() != -1)
-			globalSkill = new Skill(sk.getId(), -1, sk.getType());
-		for (Skill s : skills)
-		{
-			if (sk.equals(s))
-				return true;
-			// On regarde si cette compétence ne serait pas la même, mais en global
-			if (globalSkill != null && s.equals(globalSkill))
-				return true;
-		}
-		
-		// Ok, on va tenter notre profession supérieure, si on en a une.
-		if (parent != null)
-			return this.parent.hasSkill(sk);
-		return false;
+		return (this.skills.contains(sk));
 	}
 	
 	public String getName() {

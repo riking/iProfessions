@@ -4,8 +4,8 @@ import com.ptibiscuit.framework.JavaPluginEnhancer;
 import com.ptibiscuit.iprofession.data.IData;
 import com.ptibiscuit.iprofession.data.YamlData;
 import com.ptibiscuit.iprofession.data.models.*;
+import com.ptibiscuit.iprofession.data.models.skill.Skill;
 import com.ptibiscuit.iprofession.listeners.LearnManagerSign;
-import com.ptibiscuit.iprofession.listeners.SkillManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Plugin extends JavaPluginEnhancer {
 
 	private static Plugin instance;
-	private SkillManager sm = new SkillManager();
 	private LearnManagerSign lms = new LearnManagerSign();
 	private static IData data;
 	private ArrayList<ProfessionGroup> professionGroups = new ArrayList<ProfessionGroup>();
@@ -53,6 +52,13 @@ public class Plugin extends JavaPluginEnhancer {
 		data.loadProfessions();
 		myLog.addInFrame(data.getProfessions().size() + " professions loaded !");
 		data.loadPlayersProfessions();
+		// On doit rendre autonome chaque skill
+		for (Profession p : this.data.getProfessions()) {
+			for (Skill s : p.getSkills()) {
+				this.getServer().getPluginManager().registerEvents(s, this);
+			}
+		}
+		
 		// Loading group of professions.
 		for (Map<?, ?> dataGroup : this.getConfig().getMapList("config.profession_groups")) {
 			int count = (Integer) dataGroup.get("max_profession");
@@ -75,7 +81,6 @@ public class Plugin extends JavaPluginEnhancer {
 		
 		// On active nos listeners
 		PluginManager pManager = this.getServer().getPluginManager();
-		pManager.registerEvents(this.sm, this);
 		pManager.registerEvents(this.lms, this);
 		myLog.displayFrame(false);
 	}
@@ -365,22 +370,6 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("havnt_profession", "You havn't this profession.");
 		p.put("already_prof_in_tree", "You have already learn't a profession in the same tree.");
 		p.put("maximal_group_count_reached", "You can't learn more profession of this group.");
-	}
-	
-	public Skill getSkill(int id, int metaData, TypeSkill ts)
-	{
-		Skill fakeSk = new Skill(id, metaData, ts);
-		for (Profession p : data.getProfessions())
-			for (Skill s : p.getSkills())
-				if (s.equals(fakeSk))
-					return s;
-		// Maintenant, on regarde si on n'a pas la compétence en globale
-		Skill fakeGlobalSk = new Skill(id, -1, ts);
-		for (Profession p : data.getProfessions())
-			for (Skill s : p.getSkills())
-				if (s.equals(fakeGlobalSk))
-					return s;
-		return null;
 	}
 	
 	public boolean hasSkill(Player pl, Skill s)

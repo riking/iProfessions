@@ -15,12 +15,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 public class SkillGainMoneyOnKillCreature extends SkillSimpleMonster implements Listener {
-	private int reward;
+	private double reward;
 
 	@Override
 	public void onEnable(Map<?, ?> config) {
 		super.onEnable(config);
-		this.reward = Integer.parseInt(config.get("reward").toString());
+		this.reward = Double.parseDouble(config.get("reward").toString());
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)

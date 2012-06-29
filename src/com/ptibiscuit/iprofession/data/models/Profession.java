@@ -7,13 +7,13 @@ public class Profession {
 	private String name;
 	private String tag;
 	private ArrayList<Skill> skills = new ArrayList<Skill>();
-	private int price;
+	private double price;
 	private Profession parent;
 	private String group;
 	
 	private ArrayList<Require> prerequis = new ArrayList<Require>();
 	
-	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis, Profession parent, int price, String group)
+	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis, Profession parent, double price, String group)
 	{
 		this.name = name;
 		this.skills = skills;
@@ -69,7 +69,7 @@ public class Profession {
 		return prerequis;
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 

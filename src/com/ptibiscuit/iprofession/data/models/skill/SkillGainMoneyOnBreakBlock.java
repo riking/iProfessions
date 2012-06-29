@@ -21,12 +21,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
  */
 public class SkillGainMoneyOnBreakBlock extends SkillSimpleId implements Listener {
 	private ArrayList<Location> ignoredBlocks = new ArrayList<Location>();
-	private int reward;
+	private double reward;
 	
 	@Override
 	public void onEnable(Map<?, ?> config) {
 		super.onEnable(config);
-		this.reward = Integer.parseInt(config.get("reward").toString());
+		this.reward = Double.parseDouble(config.get("reward").toString());
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)

@@ -75,9 +75,9 @@ public class YamlData implements IData {
 			// Pour le groupe
 			String group = data.getString("linked_group");
 			// Pour le prix
-			int price = 0;
+			double price = 0;
 			if (data.get("price") != null)
-				price = data.getInt("price");
+				price = data.getDouble("price");
 			// On va cherche la liste des skills
 			ConfigurationSection dataSkills = data.getConfigurationSection("skills");
 			

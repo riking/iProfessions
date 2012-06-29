@@ -12,6 +12,9 @@ commands:
   pforget:
     description: Forget your profession.
     usage: /pforget <Profession>
+  plist:
+    description: List all online players who are that profession
+    usage: /plist <Profession>
   premprofuser:
     description: Remove a profession to a user.
     usage: /premprofuser <Player> <Profession>

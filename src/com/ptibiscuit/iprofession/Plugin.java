@@ -109,7 +109,7 @@ public class Plugin extends JavaPluginEnhancer {
 					}
 					this.tryToLearn(writer, p);
 				}
-				else if (true)
+				else
 				{
 					this.sendPreMessage(writer, "unknown_tag");
 				}
@@ -158,6 +158,27 @@ public class Plugin extends JavaPluginEnhancer {
 					}
 				} else
 				{
+					this.sendPreMessage(writer, "unknown_tag");
+				}
+			}
+			else if (label.equalsIgnoreCase("plist")) {
+				Profession p = this.data.getProfession(args[0]);
+				if (p != null) {
+					if (this.getServer().getOnlinePlayers().length > 0) {
+						this.sendMessage(sender, this.getSentence("list_online_head").replace("{PROF}", args[0]));
+						String list = "";
+						for (Player playerFoc : this.getServer().getOnlinePlayers()) {
+							for (Profession prof : this.data.getProfessionByPlayer(playerFoc.getName())) {
+								if (prof == p) {
+									list += " " + playerFoc;
+								}
+							}
+						}
+						this.sendMessage(sender, list.trim());
+					} else {
+						this.sendMessage(sender, this.getSentence("no_player_online").replace("{PROF}", args[0]));
+					}
+				} else {
 					this.sendPreMessage(writer, "unknown_tag");
 				}
 			}
@@ -370,6 +391,8 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("havnt_profession", "You havn't this profession.");
 		p.put("already_prof_in_tree", "You have already learn't a profession in the same tree.");
 		p.put("maximal_group_count_reached", "You can't learn more profession of this group.");
+		p.put("no_player_online", "There's no {PROF} online.");
+		p.put("list_online_head", "List of {PROF}");
 	}
 	
 	public boolean hasSkill(Player pl, Skill s)

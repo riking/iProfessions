@@ -313,13 +313,10 @@ public class Plugin extends JavaPluginEnhancer {
 			if (p.getPrice() != 0 && this.isEconomyEnabled())
 			{
 				double moneyPlayer = this.economy.getBalance(writer.getName());
-				if (moneyPlayer >= p.getPrice()) {
-					this.economy.withdrawPlayer(writer.getName(), p.getPrice());
-				} else {
+				if (moneyPlayer < p.getPrice()) {
 					this.sendMessage(writer, getSentence("cant_afford").replace("{PRICE}", this.economy.format(p.getPrice())));
 					return false;
 				}
-				
 			}
 			ArrayList<Profession> actualProfession = data.getProfessionByPlayer(writer.getName());
 			if (p.getParent() == null) {
@@ -327,6 +324,8 @@ public class Plugin extends JavaPluginEnhancer {
 				if (actualProfession.size() < this.getConfig().getInt("config.max_profession")) {
 					this.addProfessionToPlayer(p, writer);
 					this.sendPreMessage(writer, "profession_learnt");
+					if (this.isEconomyEnabled())
+						this.economy.withdrawPlayer(writer.getName(), p.getPrice());
 					return true;
 				} else {
 					this.sendPreMessage(writer, "cant_learn_more_prof");
@@ -338,6 +337,8 @@ public class Plugin extends JavaPluginEnhancer {
 					this.removeProfessionToPlayer(p.getParent(), writer);
 					this.addProfessionToPlayer(p, writer);
 					this.sendPreMessage(writer, "profession_learnt");
+					if (this.isEconomyEnabled())
+						this.economy.withdrawPlayer(writer.getName(), p.getPrice());
 					return true;
 				} else {
 					this.sendPreMessage(writer, "need_to_learn_parent_profession");

@@ -9,10 +9,11 @@ public class Profession {
 	private ArrayList<Skill> skills = new ArrayList<Skill>();
 	private int price;
 	private Profession parent;
+	private String group;
 	
 	private ArrayList<Require> prerequis = new ArrayList<Require>();
 	
-	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis, Profession parent, int price)
+	public Profession(String tag, String name, ArrayList<Skill> skills, ArrayList<Require> prerequis, Profession parent, int price, String group)
 	{
 		this.name = name;
 		this.skills = skills;
@@ -20,6 +21,11 @@ public class Profession {
 		this.price = price;
 		this.prerequis = prerequis;
 		this.parent = parent;
+		this.group = group;
+	}
+
+	public String getGroup() {
+		return group;
 	}
 	
 	public boolean hasSkill(Skill sk)

@@ -37,6 +37,7 @@ public class YamlData implements IData {
 			 * professions:
 				* [tag]:
 				*   name: [name]
+				*   linked_group: [group]
 				*   required:
 				*     - category: [Category]
 				*       key: [Key]
@@ -71,6 +72,8 @@ public class YamlData implements IData {
 					prerequis.add(r);
 				}
 			}
+			// Pour le groupe
+			String group = data.getString("linked_group");
 			// Pour le prix
 			int price = 0;
 			if (data.get("price") != null)
@@ -113,7 +116,7 @@ public class YamlData implements IData {
 				else
 					Plugin.getInstance().getMyLogger().warning("The parent of " + tag + ", " + tagParent + " is unkwown; Are you sure of you ?");
 			}
-			professions.add(new Profession(tag, name, skills, prerequis, parent, price));
+			professions.add(new Profession(tag, name, skills, prerequis, parent, price, group));
 		}
 	}
 	

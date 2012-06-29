@@ -14,6 +14,7 @@ import me.tehbeard.BeardStat.BeardStat;
 import me.tehbeard.BeardStat.containers.PlayerStatBlob;
 import me.tehbeard.BeardStat.containers.PlayerStatManager;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -126,8 +127,7 @@ public class Plugin extends JavaPluginEnhancer {
 				if (p != null) {
 					ArrayList<Profession> playerProfs = this.data.getProfessionByPlayer(writer.getName());
 					if (playerProfs.contains(p)) {
-						playerProfs.remove(p);
-						this.data.setPlayerProfession(writer.getName(), playerProfs);
+						this.removeProfessionToPlayer(p, writer);
 						this.sendPreMessage(writer, "forget_succ");
 					} else {
 						this.sendMessage(sender, this.getSentence("havnt_profession"));
@@ -145,12 +145,12 @@ public class Plugin extends JavaPluginEnhancer {
 				}
 				Profession p = data.getProfession(args[1]);
 				if (p != null) {
-					OfflinePlayer player = this.getServer().getOfflinePlayer(args[0]);
+					Player player = this.getServer().getPlayer(args[0]);
 					if (player != null)
 					{
-						ArrayList<Profession> playerProfs = this.data.getProfessionByPlayer(args[0]);
-						playerProfs.add(p);
-						this.data.setPlayerProfession(args[0], playerProfs);
+						this.addProfessionToPlayer(p, player);
+						this.sendMessage(sender, this.getSentence("profession_added")
+								  .replace("{PLAYER}", player.getName()));
 					}
 					else
 					{
@@ -191,13 +191,12 @@ public class Plugin extends JavaPluginEnhancer {
 				
 				Profession p = data.getProfession(args[1]);
 				if (p != null) {
-					OfflinePlayer player = this.getServer().getOfflinePlayer(args[0]);
+					Player player = this.getServer().getPlayer(args[0]);
 					if (player != null)
 					{
 						ArrayList<Profession> playerProfs = this.data.getProfessionByPlayer(args[0]);
 						if (playerProfs.contains(p)) {
-							playerProfs.remove(p);
-							this.data.setPlayerProfession(args[0], playerProfs);
+							this.removeProfessionToPlayer(p, player);
 							this.sendMessage(sender, this.getSentence("profession_removed")
 									  .replace("{PLAYER}", player.getName()));
 						} else {
@@ -320,8 +319,7 @@ public class Plugin extends JavaPluginEnhancer {
 			if (p.getParent() == null) {
 				// Il ne lui faut qu'une place de libre dans ses professions !
 				if (actualProfession.size() < this.getConfig().getInt("config.max_profession")) {
-					actualProfession.add(p);
-					data.setPlayerProfession(writer.getName(), actualProfession);
+					this.addProfessionToPlayer(p, writer);
 					this.sendPreMessage(writer, "profession_learnt");
 					return true;
 				} else {
@@ -331,9 +329,8 @@ public class Plugin extends JavaPluginEnhancer {
 				// On vérifie qu'il possède la profession parente !
 				if (actualProfession.contains(p.getParent())) {
 					// Ok, on enlève la profession parent
-					actualProfession.remove(p.getParent());
-					actualProfession.add(p);
-					data.setPlayerProfession(writer.getName(), actualProfession);
+					this.removeProfessionToPlayer(p.getParent(), writer);
+					this.addProfessionToPlayer(p, writer);
 					this.sendPreMessage(writer, "profession_learnt");
 					return true;
 				} else {
@@ -387,6 +384,7 @@ public class Plugin extends JavaPluginEnhancer {
 		p.put("cant_afford", "You havn't enough money to learn this profession. You need {PRICE}.");
 		p.put("user_havnt_profession", "{PLAYER} doesn't have this profession.");
 		p.put("profession_removed", "{PLAYER} has forget this profession !");
+		p.put("profession_added", "{PLAYER} has learn't this profession !");
 		p.put("cant_learn_more_prof", "You can't learn more profession.");
 		p.put("havnt_profession", "You havn't this profession.");
 		p.put("already_prof_in_tree", "You have already learn't a profession in the same tree.");
@@ -403,6 +401,30 @@ public class Plugin extends JavaPluginEnhancer {
 				return true;
 		}
 		return false;
+	}
+	
+	public void addProfessionToPlayer(Profession prof, Player p) {
+		ArrayList<Profession> actualProfession = data.getProfessionByPlayer(p.getName());
+		actualProfession.add(prof);
+		data.setPlayerProfession(p.getName(), actualProfession);
+		// If profession has a linked-group
+		String groupTag = prof.getGroup();
+		if (groupTag != null) {
+			Permission perm = this.getPermissionHandler().getPermission();
+			perm.playerAddGroup(p, groupTag);
+		}
+	}
+	
+	public void removeProfessionToPlayer(Profession prof, Player p) {
+		ArrayList<Profession> actualProfession = data.getProfessionByPlayer(p.getName());
+		actualProfession.remove(prof);
+		data.setPlayerProfession(p.getName(), actualProfession);
+		// If profession has a linked-group
+		String groupTag = prof.getGroup();
+		if (groupTag != null) {
+			Permission perm = this.getPermissionHandler().getPermission();
+			perm.playerRemoveGroup(p, groupTag);
+		}
 	}
 	
 	public boolean isALearnableSkill(Skill s)

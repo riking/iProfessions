@@ -162,6 +162,12 @@ public class Plugin extends JavaPluginEnhancer {
 				}
 			}
 			else if (label.equalsIgnoreCase("plist")) {
+				if (!this.getPermissionHandler().has(writer, "list", false))
+				{
+					this.sendPreMessage(writer, "have_perm");
+					return true;
+				}
+				
 				Profession p = this.data.getProfession(args[0]);
 				if (p != null) {
 					if (this.getServer().getOnlinePlayers().length > 0) {

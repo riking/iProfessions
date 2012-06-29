@@ -170,15 +170,17 @@ public class Plugin extends JavaPluginEnhancer {
 				
 				Profession p = this.data.getProfession(args[0]);
 				if (p != null) {
-					if (this.getServer().getOnlinePlayers().length > 0) {
+					ArrayList<Player> players = new ArrayList<Player>();
+					for (Player playerFoc : this.getServer().getOnlinePlayers()) {
+						if (this.data.getProfessionByPlayer(playerFoc.getName()).contains(p)) {
+							players.add(playerFoc);
+						}
+					}
+					if (players.size() > 0) {
 						this.sendMessage(sender, this.getSentence("list_online_head").replace("{PROF}", args[0]));
 						String list = "";
-						for (Player playerFoc : this.getServer().getOnlinePlayers()) {
-							for (Profession prof : this.data.getProfessionByPlayer(playerFoc.getName())) {
-								if (prof == p) {
-									list += " " + playerFoc;
-								}
-							}
+						for (Player playerFoc : players) {
+							list += playerFoc.getName() + " ";
 						}
 						this.sendMessage(sender, list.trim());
 					} else {

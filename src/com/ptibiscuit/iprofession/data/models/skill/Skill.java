@@ -32,6 +32,7 @@ public abstract class Skill implements Listener {
 		skillTypes.put("placeBlock", baseUrl + "SkillPlaceBlock");
 		skillTypes.put("craftItem", baseUrl + "SkillCraftItem");
 		skillTypes.put("smeltItem", baseUrl + "SkillSmeltItem");
+		skillTypes.put("wearItem", baseUrl + "SkillWearItem");
 		skillTypes.put("useItem", baseUrl + "SkillUseItem");
 		// Skill about winning money.
 		skillTypes.put("gainMoneyOnBreakBlock", baseUrl + "SkillGainMoneyOnBreakBlock");

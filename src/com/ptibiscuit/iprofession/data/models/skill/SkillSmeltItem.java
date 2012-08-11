@@ -34,7 +34,7 @@ public class SkillSmeltItem extends SkillSimpleId implements Listener {
 		if (e.getWhoClicked() != null && e.getWhoClicked() instanceof Player)
 		{
 			Player p = (Player) e.getWhoClicked();
-			if (this.isGod(p))
+			if (!this.hasToAct(p))
 				return;
 			if (e.getInventory() instanceof FurnaceInventory && e.getSlotType() == SlotType.CONTAINER && e.getSlot() == 0)
 			{

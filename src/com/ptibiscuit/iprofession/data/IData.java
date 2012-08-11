@@ -7,6 +7,7 @@ package com.ptibiscuit.iprofession.data;
 import com.ptibiscuit.iprofession.data.models.Profession;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface IData {
 	public void loadProfessions();
@@ -17,5 +18,8 @@ public interface IData {
 	public HashMap<String, ArrayList<Profession>> getProfessionPlayers();
 	public void setPlayerProfession(String player, ArrayList<Profession> profession);
 	public void save();
+	
+	public void loadActivatedWorlds();
+	public List<String> getActivatedWorlds();
 	
 }

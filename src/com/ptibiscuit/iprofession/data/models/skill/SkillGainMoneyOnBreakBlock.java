@@ -32,6 +32,8 @@ public class SkillGainMoneyOnBreakBlock extends SkillSimpleId implements Listene
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent e) {
 		Block b = e.getBlock();
+		if (!this.hasToAct(e.getPlayer()))
+			return;
 		if (Plugin.getInstance().hasSkill(e.getPlayer(), this))
 		{
 			if (this.hasId(b.getTypeId(), b.getData()) && !this.ignoredBlocks.contains(b.getLocation()))
@@ -43,6 +45,8 @@ public class SkillGainMoneyOnBreakBlock extends SkillSimpleId implements Listene
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent e) {
+		if (!this.hasToAct(e.getPlayer()))
+			return;
 		if (Plugin.getInstance().hasSkill(e.getPlayer(), this))
 		{
 			if (this.hasId(e.getBlock().getTypeId(), e.getBlock().getData()))

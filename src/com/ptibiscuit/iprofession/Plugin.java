@@ -6,10 +6,7 @@ import com.ptibiscuit.iprofession.data.YamlData;
 import com.ptibiscuit.iprofession.data.models.*;
 import com.ptibiscuit.iprofession.data.models.skill.Skill;
 import com.ptibiscuit.iprofession.listeners.LearnManagerSign;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import me.tehbeard.BeardStat.BeardStat;
 import me.tehbeard.BeardStat.containers.PlayerStatBlob;
 import me.tehbeard.BeardStat.containers.PlayerStatManager;
@@ -17,6 +14,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -53,6 +51,7 @@ public class Plugin extends JavaPluginEnhancer {
 		data.loadProfessions();
 		myLog.addInFrame(data.getProfessions().size() + " professions loaded !");
 		data.loadPlayersProfessions();
+		data.loadActivatedWorlds();
 		// On doit rendre autonome chaque skill
 		for (Profession p : this.data.getProfessions()) {
 			for (Skill s : p.getSkills()) {
@@ -362,6 +361,7 @@ public class Plugin extends JavaPluginEnhancer {
 		defaultGroup.set("professions", professions);
 		nodeGroups.add(defaultGroup);
 		c.set("config.profession_groups", nodeGroups);
+		c.set("config.activated_worlds", new ArrayList<String>());
 		c.set("players", new HashMap<String, String>());
 		c.set("professions", new HashMap<String, String>());
 	}
@@ -515,6 +515,20 @@ public class Plugin extends JavaPluginEnhancer {
 	public Economy getEconomy()
 	{
 		return this.economy;
+	}
+	
+	public boolean isWorldActivated(World w) {
+		return this.isWorldActivated(w.getName());
+	}
+	
+	public boolean isWorldActivated(String s) {
+		List<String> activeWorlds = this.data.getActivatedWorlds();
+		System.out.println(": " + activeWorlds.isEmpty());
+		if (!activeWorlds.isEmpty()) {
+			return activeWorlds.contains(s);
+		} else {
+			return true;
+		}
 	}
 	
 	public ProfessionGroup getGroupByProfession(Profession p) {

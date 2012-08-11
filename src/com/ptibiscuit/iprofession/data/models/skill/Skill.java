@@ -20,8 +20,15 @@ public abstract class Skill implements Listener {
 	
 	public abstract void onEnable(Map<?, ?> config);
 	
-	public boolean isGod(Player p) {
+	private boolean isGod(Player p) {
 		return (Plugin.getInstance().getPermissionHandler().has(p, "god", true));
+	}
+	
+	public boolean hasToAct(Player p) {
+		System.out.println(this.isGod(p) + " " + Plugin.getInstance().isWorldActivated(p.getWorld()));
+		if (this.isGod(p) || !Plugin.getInstance().isWorldActivated(p.getWorld()))
+			return false;
+		return true;
 	}
 	
 	// Just to tag Skill

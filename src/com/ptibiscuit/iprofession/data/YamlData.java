@@ -18,6 +18,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class YamlData implements IData {
 	private ArrayList<Profession> professions = new ArrayList<Profession>();
+	private List<String> activatedWorlds = new ArrayList<String>();
 	private HashMap<String, ArrayList<Profession>> playersProfessions = new HashMap<String, ArrayList<Profession>>();
 	
 	@Override
@@ -199,5 +200,16 @@ public class YamlData implements IData {
 		else
 			playersProfessions.remove(player);
 		this.save();
+	}
+	
+	@Override
+	public List<String> getActivatedWorlds() {
+		return this.activatedWorlds;
+	}
+
+	@Override
+	public void loadActivatedWorlds() {
+		if (Plugin.getInstance().getConfig().getStringList("config.activated_worlds") != null)
+			this.activatedWorlds = Plugin.getInstance().getConfig().getStringList("config.activated_worlds");
 	}
 }

@@ -29,7 +29,7 @@ public class SkillPlaceBlock extends SkillSimpleId implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent e) {
-		if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && !this.isGod(e.getPlayer()))
+		if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && this.hasToAct(e.getPlayer()))
 		{
 			if (this.hasId(e.getBlock().getTypeId(), e.getBlock().getData()))
 			{

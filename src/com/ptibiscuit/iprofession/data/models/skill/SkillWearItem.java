@@ -33,9 +33,8 @@ public class SkillWearItem extends SkillSimpleId {
 		if (e.getWhoClicked() != null && e.getWhoClicked() instanceof Player)
 		{
 			Player p = (Player) e.getWhoClicked();
-			if (this.isGod(p))
+			if (!this.hasToAct(p))
 				return;
-			System.out.println(e.getInventory());
 			if (e.getInventory() instanceof CraftingInventory && e.getSlotType() == SlotType.ARMOR)
 			{
 				// On a affaire à quelqu'un qui veut mettre un objet dans le four pour le fondre. On s'en occupe, cap'tain

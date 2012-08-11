@@ -29,7 +29,7 @@ public class SkillUseItem extends SkillSimpleId {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCraftItem(PlayerAnimationEvent e) {
-		if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && !this.isGod(e.getPlayer()))
+		if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && this.hasToAct(e.getPlayer()))
 		{
 			ItemStack item = e.getPlayer().getItemInHand();
 			if (this.hasId(item.getTypeId(), item.getData().getData()))

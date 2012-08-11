@@ -6,10 +6,8 @@ package com.ptibiscuit.iprofession.data.models.skill;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.bukkit.configuration.MemoryConfiguration;
 
 
 /**

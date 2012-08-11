@@ -1,6 +1,6 @@
 name: iProfessions
 main: com.ptibiscuit.iprofession.Plugin
-version: 3.1
+version: 3.2
 depend: [PluginsBaker]
 softepend: [BeardStat]
 authors:

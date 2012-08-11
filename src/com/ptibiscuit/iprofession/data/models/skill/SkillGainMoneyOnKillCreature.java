@@ -29,6 +29,8 @@ public class SkillGainMoneyOnKillCreature extends SkillSimpleMonster implements 
 			EntityDamageByEntityEvent eBis = (EntityDamageByEntityEvent) e.getEntity().getLastDamageCause();
 			if (eBis.getDamager() instanceof Player) {
 				Player p = (Player) eBis.getDamager();
+				if (!this.hasToAct(p))
+					return;
 				if (Plugin.getInstance().hasSkill(p, this)) {
 					if (this.containsType(e.getEntityType())) {
 						Plugin.getInstance().getEconomy().depositPlayer(p.getName(), this.reward);

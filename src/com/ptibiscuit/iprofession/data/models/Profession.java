@@ -30,6 +30,10 @@ public class Profession {
 	
 	public boolean hasSkill(Skill sk)
 	{
+        if (parent != null)
+            if (parent.hasSkill(sk))
+                return true;
+        
 		return (this.skills.contains(sk));
 	}
 	

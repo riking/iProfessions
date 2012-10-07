@@ -30,26 +30,33 @@ public class SkillBreakBlock extends SkillSimpleId {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockDestroy(BlockBreakEvent e) {
+        Plugin plugin = Plugin.getInstance();
 		if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && this.hasToAct(e.getPlayer()))
 		{
-			if (this.hasId(e.getBlock().getTypeId(), e.getBlock().getData()) && !this.ignoredBlocks.contains(e.getBlock().getLocation()))
+			if (this.hasId(e.getBlock().getTypeId(), e.getBlock().getData())
+                    && (!this.ignoredBlocks.contains(e.getBlock().getLocation()) || !plugin.getConfig().getBoolean("config.allow_break_placed_blocks", false)))
 			{
 				e.setCancelled(true);
-				Plugin.getInstance().sendMessage(e.getPlayer(), this.hasnot);
+				plugin.sendMessage(e.getPlayer(), this.hasnot);
 			}
 		}
-		this.ignoredBlocks.remove(e.getBlock().getLocation());
+        if (plugin.getConfig().getBoolean("config.allow_break_placed_blocks", false))
+            this.ignoredBlocks.remove(e.getBlock().getLocation());
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent e) {
-		if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && this.hasToAct(e.getPlayer()))
-		{
-			if (this.hasId(e.getBlock().getTypeId(), e.getBlock().getData()))
-			{
-				this.ignoredBlocks.add(e.getBlock().getLocation());
-			}
-		}
+        Plugin plugin = Plugin.getInstance();
+        if (plugin.getConfig().getBoolean("config.allow_break_placed_blocks", false))
+        {
+            if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && this.hasToAct(e.getPlayer()))
+            {
+                if (this.hasId(e.getBlock().getTypeId(), e.getBlock().getData()))
+                {
+                    this.ignoredBlocks.add(e.getBlock().getLocation());
+                }
+            }
+        }
 	}
 	
 }

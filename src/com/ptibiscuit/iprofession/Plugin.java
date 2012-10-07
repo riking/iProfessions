@@ -362,6 +362,7 @@ public class Plugin extends JavaPluginEnhancer {
 		nodeGroups.add(defaultGroup);
 		c.set("config.profession_groups", nodeGroups);
 		c.set("config.activated_worlds", new ArrayList<String>());
+        c.set("config.allow_break_placed_blocks", false);
 		c.set("players", new HashMap<String, String>());
 		c.set("professions", new HashMap<String, String>());
 	}
@@ -523,7 +524,6 @@ public class Plugin extends JavaPluginEnhancer {
 	
 	public boolean isWorldActivated(String s) {
 		List<String> activeWorlds = this.data.getActivatedWorlds();
-		System.out.println(": " + activeWorlds.isEmpty());
 		if (!activeWorlds.isEmpty()) {
 			return activeWorlds.contains(s);
 		} else {

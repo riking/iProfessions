@@ -16,7 +16,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillWearItem extends SkillSimpleId {

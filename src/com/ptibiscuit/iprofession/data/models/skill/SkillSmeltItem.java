@@ -27,7 +27,6 @@ public class SkillSmeltItem extends SkillSimpleId implements Listener {
         this.hasNot = config.get("hasnot").toString();
     }
 
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSmeltItem(InventoryClickEvent e) {
         if (e.getWhoClicked() != null && e.getWhoClicked() instanceof Player) {

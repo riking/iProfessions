@@ -15,8 +15,8 @@
       <url>http://repo.bukkit.org/content/repositories/snapshots/</url>
     </repository>
     <repository>
-        <id>escapecraft-repo</id>
-        <url>http://dev.escapecraft.com/maven/</url>
+      <id>escapecraft-repo</id>
+      <url>http://dev.escapecraft.com/maven/</url>
     </repository>
   </repositories>
   <build>
@@ -47,19 +47,19 @@
       <version>1.5.1-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>net.milkbowl.vault</groupId>
-    	<artifactId>Vault</artifactId>
-    	<version>1.2.25-SNAPSHOT</version>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>Vault</artifactId>
+      <version>1.2.25-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>me.tehbeard</groupId>
-    	<artifactId>BeardStat</artifactId>
-    	<version>0.5.4</version>
+      <groupId>me.tehbeard</groupId>
+      <artifactId>BeardStat</artifactId>
+      <version>0.5.4</version>
     </dependency>
     <dependency>
-    	<groupId>com.ptibiscuit</groupId>
-    	<artifactId>PluginsBaker</artifactId>
-    	<version>0.0.1-SNAPSHOT</version>
+      <groupId>com.ptibiscuit</groupId>
+      <artifactId>PluginsBaker</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

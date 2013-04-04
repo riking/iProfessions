@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillDropItem extends SkillSimpleId implements Listener {

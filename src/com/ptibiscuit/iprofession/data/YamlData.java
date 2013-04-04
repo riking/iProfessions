@@ -104,20 +104,24 @@ public class YamlData implements IData {
             ConfigurationSection dataSkills = data.getConfigurationSection("skills");
 
             // On va faire une boucle pour chaque type de skill qui existe
-            for (Class<? extends Skill> skillClass : Skill.skills) {
-                Skill skill;
-                try {
-                    skill = skillClass.newInstance();
-                } catch (InstantiationException e) {
-                    Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, "Failed to load skill: " + skillClass.getName(), e);
-                    continue;
-                } catch (IllegalAccessException e) {
-                    Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, "Failed to load skill: " + skillClass.getName(), e);
-                    continue;
+            for (String sk : dataSkills.getKeys(false)) {
+                if (Skill.skills.containsKey(sk)) {
+                    Skill skill;
+                    try {
+                        skill = Skill.skills.get(sk).newInstance();
+                    } catch (InstantiationException e) {
+                        Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, "Failed to load skill: " + sk, e);
+                        continue;
+                    } catch (IllegalAccessException e) {
+                        Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, "Failed to load skill: " + sk, e);
+                        continue;
+                    }
+                    ConfigurationSection skillsec = dataSkills.getConfigurationSection(skill.getKey());
+                    skill.onEnable(skillsec);
+                    skills.add(skill);
+                } else {
+                    Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, "Failed to find skill class: " + sk);
                 }
-                ConfigurationSection skillsec = dataSkills.getConfigurationSection(skill.getKey());
-                skill.onEnable(skillsec);
-                skills.add(skill);
             }
 
             // On va prendre la profession parent, ou null

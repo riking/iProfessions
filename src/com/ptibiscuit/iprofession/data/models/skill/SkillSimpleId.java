@@ -11,11 +11,10 @@ import java.util.Map.Entry;
 
 
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillSimpleId extends Skill {
-
     private ArrayList<Entry<Integer, Integer>> ids = new ArrayList<Entry<Integer, Integer>>();
 
     @Override

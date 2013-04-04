@@ -15,11 +15,10 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.FurnaceInventory;
 
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillSmeltItem extends SkillSimpleId implements Listener {
-
     private String hasNot;
 
     @Override
@@ -46,6 +45,4 @@ public class SkillSmeltItem extends SkillSimpleId implements Listener {
             }
         }
     }
-
-
 }

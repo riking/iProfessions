@@ -39,5 +39,4 @@ public class SkillGainMoneyOnKillCreature extends SkillSimpleMonster implements 
             }
         }
     }
-
 }

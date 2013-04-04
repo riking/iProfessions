@@ -29,5 +29,4 @@ public interface IData {
     public void loadActivatedWorlds();
 
     public List<String> getActivatedWorlds();
-
 }

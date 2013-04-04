@@ -36,5 +36,4 @@ public class ProfessionGroup {
     public ArrayList<Profession> getProfessions() {
         return professions;
     }
-
 }

@@ -9,11 +9,10 @@ import java.util.Map;
 import org.bukkit.entity.EntityType;
 
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillSimpleMonster extends Skill {
-
     private ArrayList<EntityType> types = new ArrayList<EntityType>();
 
     @Override

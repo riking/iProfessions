@@ -21,7 +21,6 @@ public class YamlData implements IData {
     private List<String> activatedWorlds = new ArrayList<String>();
     private HashMap<String, ArrayList<Profession>> playersProfessions = new HashMap<String, ArrayList<Profession>>();
 
-    @Override
     public void loadProfessions() {
         FileConfiguration c = Plugin.getInstance().getConfig();
         if (c.getConfigurationSection("professions") == null)
@@ -114,7 +113,6 @@ public class YamlData implements IData {
         }
     }
 
-    @Override
     public void loadPlayersProfessions() {
         Plugin p = Plugin.getInstance();
         ConfigurationSection cs = p.getConfig().getConfigurationSection("players");
@@ -139,14 +137,11 @@ public class YamlData implements IData {
         }
     }
 
-
-    @Override
     public ArrayList<Profession> getProfessionByPlayer(String s) {
         ArrayList<Profession> pps = playersProfessions.get(s);
         return (pps != null) ? pps : new ArrayList<Profession>();
     }
 
-    @Override
     public void save() {
         for (Entry<String, ArrayList<Profession>> e : this.playersProfessions.entrySet()) {
             ArrayList<String> professionsTagList = new ArrayList<String>();
@@ -158,7 +153,6 @@ public class YamlData implements IData {
         Plugin.getInstance().saveConfig();
     }
 
-    @Override
     public Profession getProfession(String tag) {
         for (Profession p : professions) {
             if (p.getTag().equalsIgnoreCase(tag)) {
@@ -168,17 +162,14 @@ public class YamlData implements IData {
         return null;
     }
 
-    @Override
     public ArrayList<Profession> getProfessions() {
         return this.professions;
     }
 
-    @Override
     public HashMap<String, ArrayList<Profession>> getProfessionPlayers() {
         return this.playersProfessions;
     }
 
-    @Override
     public void setPlayerProfession(String player, ArrayList<Profession> profession) {
         if (profession != null)
             playersProfessions.put(player, profession);
@@ -187,12 +178,10 @@ public class YamlData implements IData {
         this.save();
     }
 
-    @Override
     public List<String> getActivatedWorlds() {
         return this.activatedWorlds;
     }
 
-    @Override
     public void loadActivatedWorlds() {
         if (Plugin.getInstance().getConfig().getStringList("config.activated_worlds") != null)
             this.activatedWorlds = Plugin.getInstance().getConfig().getStringList("config.activated_worlds");

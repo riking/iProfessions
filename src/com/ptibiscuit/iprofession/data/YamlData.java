@@ -30,8 +30,9 @@ public class YamlData implements IData {
 
     public void loadProfessions() {
         FileConfiguration c = Plugin.getInstance().getConfig();
-        if (c.getConfigurationSection("professions") == null)
+        if (c.getConfigurationSection("professions") == null) {
             return;
+        }
         for (Entry<String, Object> listProfs : c.getConfigurationSection("professions").getValues(false).entrySet()) {
             /* Voici donc l'architecture d'une classe
              * players:
@@ -40,27 +41,27 @@ public class YamlData implements IData {
              *     - miner
              *     - girl_thing
              * professions:
-                * [tag]:
-                *   name: [name]
-                *   linked_group: [group]
-                *   required:
-                *     - category: [Category]
-                *       key: [Key]
-                *       require: [Number]
-                *       hasnot: [Has Not Message]
-                *   skills:
-                *     craftItem:
-                *       - id: [Id]
-                *         hasnot: [Has Not Message]
-                *     useItem:
-                *       - id: [Id]
-                *         hasnot: [Has Not Message]
-                *     breakBlock:
-                *       - id: [Id]
-                *         hasnot: [Has Not Message]
-                *   permissions:
-                *     - [perm]
-                *     - [perm]
+             * [tag]:
+             *   name: [name]
+             *   linked_group: [group]
+             *   required:
+             *     - category: [Category]
+             *       key: [Key]
+             *       require: [Number]
+             *       hasnot: [Has Not Message]
+             *   skills:
+             *     craftItem:
+             *       - id: [Id]
+             *         hasnot: [Has Not Message]
+             *     useItem:
+             *       - id: [Id]
+             *         hasnot: [Has Not Message]
+             *     breakBlock:
+             *       - id: [Id]
+             *         hasnot: [Has Not Message]
+             *   permissions:
+             *     - [perm]
+             *     - [perm]
              */
 
             String tag = listProfs.getKey();
@@ -96,42 +97,39 @@ public class YamlData implements IData {
             String group = data.getString("linked_group");
             // Pour le prix
             double price = 0;
-            if (data.get("price") != null)
+            if (data.get("price") != null) {
                 price = data.getDouble("price");
+            }
             // On va cherche la liste des skills
             ConfigurationSection dataSkills = data.getConfigurationSection("skills");
 
             // On va faire une boucle pour chaque type de skill qui existe
-            for (Entry<String, String> skillType : Skill.skillTypes.entrySet()) {
-                List<Map<?, ?>> dataTypeSkill = dataSkills.getMapList(skillType.getKey());
-                if (dataTypeSkill != null) {
-                    for (Map<?, ?> dataSkill : dataTypeSkill) {
-                        Skill skill = null;
-                        try {
-                            skill = (Skill) Class.forName(skillType.getValue()).newInstance();
-                        } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (InstantiationException ex) {
-                            Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IllegalAccessException ex) {
-                            Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        skill.onEnable(dataSkill);
-                        skills.add(skill);
-
-                    }
+            for (Class<? extends Skill> skillClass : Skill.skills) {
+                Skill skill;
+                try {
+                    skill = skillClass.newInstance();
+                } catch (InstantiationException e) {
+                    Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, "Failed to load skill: " + skillClass.getName(), e);
+                    continue;
+                } catch (IllegalAccessException e) {
+                    Logger.getLogger(YamlData.class.getName()).log(Level.SEVERE, "Failed to load skill: " + skillClass.getName(), e);
+                    continue;
                 }
+                ConfigurationSection skillsec = dataSkills.getConfigurationSection(skill.getKey());
+                skill.onEnable(skillsec);
+                skills.add(skill);
             }
 
             // On va prendre la profession parent, ou null
             Profession parent = null;
             String tagParent = data.getString("parent");
             if (tagParent != null) {
-                Profession possibleParent = this.getProfession(tagParent);
-                if (possibleParent != null)
+                Profession possibleParent = getProfession(tagParent);
+                if (possibleParent != null) {
                     parent = possibleParent;
-                else
+                } else {
                     Plugin.getInstance().getMyLogger().warning("The parent of " + tag + ", " + tagParent + " is unkwown; Are you sure of you ?");
+                }
             }
             professions.add(new Profession(plugin, tag, name, skills, permissions, prerequis, parent, price, group));
         }
@@ -140,8 +138,9 @@ public class YamlData implements IData {
     public void loadPlayersProfessions() {
         Plugin p = Plugin.getInstance();
         ConfigurationSection cs = p.getConfig().getConfigurationSection("players");
-        if (cs == null)
+        if (cs == null) {
             return;
+        }
         for (Entry<String, Object> e : cs.getValues(false).entrySet()) {
             ConfigurationSection csPlayer = (ConfigurationSection) e.getValue();
             String playerName = e.getKey();
@@ -149,14 +148,14 @@ public class YamlData implements IData {
             ArrayList<Profession> listProfessions = new ArrayList<Profession>();
             for (String professionsTag : listProfessionsTag) {
 
-                Profession prof = this.getProfession(professionsTag);
+                Profession prof = getProfession(professionsTag);
                 if (prof != null) {
                     listProfessions.add(prof);
                 } else {
                     Plugin.getInstance().getMyLogger().warning(e.getKey() + " has a non existing profession. (" + professionsTag + ")");
                 }
             }
-            this.playersProfessions.put(playerName, listProfessions);
+            playersProfessions.put(playerName, listProfessions);
 
         }
     }
@@ -168,7 +167,7 @@ public class YamlData implements IData {
     }
 
     public void save() {
-        for (Entry<String, ArrayList<Profession>> e : this.playersProfessions.entrySet()) {
+        for (Entry<String, ArrayList<Profession>> e : playersProfessions.entrySet()) {
             ArrayList<String> professionsTagList = new ArrayList<String>();
             for (Profession p : e.getValue()) {
                 professionsTagList.add(p.getTag());
@@ -188,27 +187,29 @@ public class YamlData implements IData {
     }
 
     public ArrayList<Profession> getProfessions() {
-        return this.professions;
+        return professions;
     }
 
     public HashMap<String, ArrayList<Profession>> getProfessionPlayers() {
-        return this.playersProfessions;
+        return playersProfessions;
     }
 
     public void setPlayerProfession(String player, ArrayList<Profession> profession) {
-        if (profession != null)
+        if (profession != null) {
             playersProfessions.put(player, profession);
-        else
+        } else {
             playersProfessions.remove(player);
-        this.save();
+        }
+        save();
     }
 
     public List<String> getActivatedWorlds() {
-        return this.activatedWorlds;
+        return activatedWorlds;
     }
 
     public void loadActivatedWorlds() {
-        if (Plugin.getInstance().getConfig().getStringList("config.activated_worlds") != null)
-            this.activatedWorlds = Plugin.getInstance().getConfig().getStringList("config.activated_worlds");
+        if (Plugin.getInstance().getConfig().getStringList("config.activated_worlds") != null) {
+            activatedWorlds = Plugin.getInstance().getConfig().getStringList("config.activated_worlds");
+        }
     }
 }

@@ -4,8 +4,7 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import java.util.Map;
-
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,17 +20,22 @@ public class SkillPlaceBlock extends SkillSimpleId implements Listener {
     private String hasnot;
 
     @Override
-    public void onEnable(Map<?, ?> config) {
+    public String getKey() {
+        return "placeBlock";
+    }
+
+    @Override
+    public void onEnable(ConfigurationSection config) {
         super.onEnable(config);
-        this.hasnot = config.get("hasnot").toString();
+        hasnot = config.get("hasnot").toString();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && this.hasToAct(e.getPlayer())) {
-            if (this.hasId(e.getBlock().getTypeId(), e.getBlock().getData())) {
+        if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && hasToAct(e.getPlayer())) {
+            if (hasId(e.getBlock().getTypeId(), e.getBlock().getData())) {
                 e.setCancelled(true);
-                Plugin.getInstance().sendMessage(e.getPlayer(), this.hasnot);
+                Plugin.getInstance().sendMessage(e.getPlayer(), hasnot);
             }
         }
     }

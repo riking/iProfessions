@@ -5,27 +5,33 @@
 package com.ptibiscuit.iprofession.data.models.skill;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 
 /**
  *
  * @author ANNA
  */
-public class SkillSimpleMonster extends Skill {
+public abstract class SkillSimpleMonster extends Skill {
     private ArrayList<EntityType> types = new ArrayList<EntityType>();
 
     @Override
-    public void onEnable(Map<?, ?> config) {
-        String[] typesName = config.get("type").toString().split(",");
+    public void onEnable(ConfigurationSection config) {
+        List<String> typesName = config.getStringList("type");
         for (String typeName : typesName) {
-            types.add(EntityType.fromName(typeName));
+            EntityType type = EntityType.fromName(typeName);
+            if (type == null) {
+                Logger.getLogger("iProfessions").log(Level.SEVERE, "Bad entity name: '" + typeName + "' (expected an EntityType string)");
+            }
         }
     }
 
     public ArrayList<EntityType> getTypes() {
-        return this.types;
+        return types;
     }
 
     public boolean containsType(EntityType type) {

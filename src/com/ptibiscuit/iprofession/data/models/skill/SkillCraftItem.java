@@ -4,8 +4,7 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import java.util.Map;
-
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,22 +18,28 @@ public class SkillCraftItem extends SkillSimpleId implements Listener {
     private String hasNot;
 
     @Override
-    public void onEnable(Map<?, ?> config) {
+    public String getKey() {
+        return "craftItem";
+    }
+
+    @Override
+    public void onEnable(ConfigurationSection config) {
         super.onEnable(config);
-        this.hasNot = config.get("hasnot").toString();
+        hasNot = config.get("hasnot").toString();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCraftItem(CraftItemEvent e) {
         if (e.getView().getPlayer() != null && e.getView().getPlayer() instanceof Player) {
             Player p = (Player) e.getView().getPlayer();
-            if (!this.hasToAct(p))
+            if (!hasToAct(p)) {
                 return;
+            }
             ItemStack item = e.getRecipe().getResult();
-            if (this.hasId(item.getTypeId(), item.getData().getData())) {
+            if (hasId(item.getTypeId(), item.getData().getData())) {
                 if (!Plugin.getInstance().hasSkill(p, this)) {
                     e.setCancelled(true);
-                    Plugin.getInstance().sendMessage(p, this.hasNot);
+                    Plugin.getInstance().sendMessage(p, hasNot);
                 }
             }
         }

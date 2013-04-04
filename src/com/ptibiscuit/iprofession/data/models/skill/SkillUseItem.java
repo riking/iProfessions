@@ -4,8 +4,7 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import java.util.Map;
-
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -18,22 +17,26 @@ import com.ptibiscuit.iprofession.Plugin;
  * @author ANNA
  */
 public class SkillUseItem extends SkillSimpleId {
-
     private String hasNot;
 
     @Override
-    public void onEnable(Map<?, ?> config) {
+    public String getKey() {
+        return "useItem";
+    }
+
+    @Override
+    public void onEnable(ConfigurationSection config) {
         super.onEnable(config);
-        this.hasNot = config.get("hasnot").toString();
+        hasNot = config.get("hasnot").toString();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCraftItem(PlayerAnimationEvent e) {
-        if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && this.hasToAct(e.getPlayer())) {
+        if (!Plugin.getInstance().hasSkill(e.getPlayer(), this) && hasToAct(e.getPlayer())) {
             ItemStack item = e.getPlayer().getItemInHand();
-            if (this.hasId(item.getTypeId(), item.getData().getData())) {
+            if (hasId(item.getTypeId(), item.getData().getData())) {
                 e.setCancelled(true);
-                Plugin.getInstance().sendMessage(e.getPlayer(), this.hasNot);
+                Plugin.getInstance().sendMessage(e.getPlayer(), hasNot);
             }
         }
     }

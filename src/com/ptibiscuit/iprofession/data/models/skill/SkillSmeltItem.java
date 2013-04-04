@@ -4,8 +4,7 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import java.util.Map;
-
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,23 +23,29 @@ public class SkillSmeltItem extends SkillSimpleId implements Listener {
     private String hasNot;
 
     @Override
-    public void onEnable(Map<?, ?> config) {
+    public String getKey() {
+        return "smeltItem";
+    }
+
+    @Override
+    public void onEnable(ConfigurationSection config) {
         super.onEnable(config);
-        this.hasNot = config.get("hasnot").toString();
+        hasNot = config.get("hasnot").toString();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSmeltItem(InventoryClickEvent e) {
         if (e.getWhoClicked() != null && e.getWhoClicked() instanceof Player) {
             Player p = (Player) e.getWhoClicked();
-            if (!this.hasToAct(p))
+            if (!hasToAct(p)) {
                 return;
+            }
             if (e.getInventory() instanceof FurnaceInventory && e.getSlotType() == SlotType.CONTAINER && e.getSlot() == 0) {
                 // On a affaire à quelqu'un qui veut mettre un objet dans le four pour le fondre. On s'en occupe, cap'tain
-                if (this.hasId(e.getCursor().getTypeId(), e.getCursor().getData().getData())) {
+                if (hasId(e.getCursor().getTypeId(), e.getCursor().getData().getData())) {
                     if (!Plugin.getInstance().hasSkill(p, this)) {
                         e.setCancelled(true);
-                        Plugin.getInstance().sendMessage(p, this.hasNot);
+                        Plugin.getInstance().sendMessage(p, hasNot);
                     }
                 }
             }

@@ -4,8 +4,7 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import java.util.Map;
-
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,9 +18,14 @@ public class SkillGainMoneyOnKillCreature extends SkillSimpleMonster implements 
     private double reward;
 
     @Override
-    public void onEnable(Map<?, ?> config) {
+    public String getKey() {
+        return "gainMoneyOnKillCreature";
+    }
+
+    @Override
+    public void onEnable(ConfigurationSection config) {
         super.onEnable(config);
-        this.reward = Double.parseDouble(config.get("reward").toString());
+        reward = config.getDouble("reward");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -30,11 +34,12 @@ public class SkillGainMoneyOnKillCreature extends SkillSimpleMonster implements 
             EntityDamageByEntityEvent eBis = (EntityDamageByEntityEvent) e.getEntity().getLastDamageCause();
             if (eBis.getDamager() instanceof Player) {
                 Player p = (Player) eBis.getDamager();
-                if (!this.hasToAct(p))
+                if (!hasToAct(p)) {
                     return;
+                }
                 if (Plugin.getInstance().hasSkill(p, this)) {
-                    if (this.containsType(e.getEntityType())) {
-                        Plugin.getInstance().getEconomy().depositPlayer(p.getName(), this.reward);
+                    if (containsType(e.getEntityType())) {
+                        Plugin.getInstance().getEconomy().depositPlayer(p.getName(), reward);
                     }
                 }
             }

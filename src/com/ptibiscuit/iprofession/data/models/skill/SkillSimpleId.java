@@ -2,24 +2,30 @@ package com.ptibiscuit.iprofession.data.models.skill;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * A base class that holds a collection of block / item IDs with damage
  * values.
  */
-public class SkillSimpleId extends Skill {
+public abstract class SkillSimpleId extends Skill {
     private Map<Integer, Integer> ids = new HashMap<Integer, Integer>();
 
     @Override
-    public void onEnable(Map<?, ?> config) {
-        /// XXX Should be YAML parse
-        for (String idString : config.get("id").toString().split(",")) {
-            String[] dataIdString = idString.split("-");
-            if (dataIdString.length == 1) {
-                // New wildcard is Short.MAX_VALUE, not -1
-                this.ids.put(Integer.valueOf(dataIdString[0]), Integer.valueOf(Short.MAX_VALUE));
-            } else {
-                this.ids.put(Integer.valueOf(dataIdString[0]), Integer.valueOf(dataIdString[1]));
+    public void onEnable(ConfigurationSection config) {
+        for (String idString : config.getStringList("")) {
+            try {
+                if (idString.contains("-")) {
+                    String[] data = idString.split("-");
+                    ids.put(Integer.valueOf(data[0]), Integer.valueOf(data[1]));
+                } else {
+                    ids.put(Integer.valueOf(idString), Integer.valueOf(Short.MAX_VALUE));
+                }
+            } catch (NumberFormatException e) {
+                Logger.getLogger("iProfessions").log(Level.SEVERE, "Malformed block/item id: '" + idString + "' (expected ## or ##-##)", e);
             }
         }
     }

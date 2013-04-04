@@ -44,15 +44,16 @@ public class Plugin extends JavaPluginEnhancer {
     private ArrayList<ProfessionGroup> professionGroups = new ArrayList<ProfessionGroup>();
 
     // TODO: Move to plugin.yml
-    Permission learn = new Permission("iprofession.learn", "Learn a new profession", PermissionDefault.TRUE);
-    Permission forget = new Permission("iprofession.forget", "Forget your profession", PermissionDefault.TRUE);
-    Permission learn_op = new Permission("iprofession.learn.other", "Cause another user to learn a profession", PermissionDefault.OP);
-    Permission forget_op = new Permission("iprofession.learn.other", "Cause another user to forget a profession", PermissionDefault.OP);
-    Permission list = new Permission("iprofession.list", "List available professions", PermissionDefault.TRUE);
-    Permission showplayers_own = new Permission("iprofession.showplayers.own", "Show all online players with a certain profession that you also have", PermissionDefault.FALSE);
-    Permission showplayers_all = new Permission("iprofession.showplayers.all", "Show all online players with a certain profession", PermissionDefault.OP);
-    Permission whois = new Permission("iprofession.whois.self", "Get profession information about yourself", PermissionDefault.TRUE);
-    Permission whois_other = new Permission("iprofession.whois.other", "Get profession information about someone else", PermissionDefault.TRUE);
+    public Permission learn = new Permission("iprofession.learn", "Learn a new profession", PermissionDefault.TRUE);
+    public Permission forget = new Permission("iprofession.forget", "Forget your profession", PermissionDefault.TRUE);
+    public Permission learn_op = new Permission("iprofession.learn.other", "Cause another user to learn a profession", PermissionDefault.OP);
+    public Permission forget_op = new Permission("iprofession.learn.other", "Cause another user to forget a profession", PermissionDefault.OP);
+    public Permission list = new Permission("iprofession.list", "List available professions", PermissionDefault.TRUE);
+    public Permission showplayers_own = new Permission("iprofession.showplayers.own", "Show all online players with a certain profession that you also have", PermissionDefault.FALSE);
+    public Permission showplayers_all = new Permission("iprofession.showplayers.all", "Show all online players with a certain profession", PermissionDefault.OP);
+    public Permission whois = new Permission("iprofession.whois.self", "Get profession information about yourself", PermissionDefault.TRUE);
+    public Permission whois_other = new Permission("iprofession.whois.other", "Get profession information about someone else", PermissionDefault.TRUE);
+    public Permission godperm = new Permission("iprofession.god", PermissionDefault.FALSE);
 
     @Override
     public void onDisable() {

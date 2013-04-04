@@ -4,17 +4,17 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.Map;
-import org.bukkit.entity.Player;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.ptibiscuit.iprofession.Plugin;
+
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillUseItem extends SkillSimpleId {

@@ -1,9 +1,5 @@
 package com.ptibiscuit.iprofession.data;
 
-import com.ptibiscuit.iprofession.Plugin;
-import com.ptibiscuit.iprofession.data.models.Profession;
-import com.ptibiscuit.iprofession.data.models.Require;
-import com.ptibiscuit.iprofession.data.models.skill.Skill;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,9 +8,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.ptibiscuit.iprofession.Plugin;
+import com.ptibiscuit.iprofession.data.models.Profession;
+import com.ptibiscuit.iprofession.data.models.Require;
+import com.ptibiscuit.iprofession.data.models.skill.Skill;
 
 public class YamlData implements IData {
     private ArrayList<Profession> professions = new ArrayList<Profession>();

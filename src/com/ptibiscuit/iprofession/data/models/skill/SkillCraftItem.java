@@ -4,14 +4,16 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.Map;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
+
+import com.ptibiscuit.iprofession.Plugin;
 
 public class SkillCraftItem extends SkillSimpleId implements Listener {
     private String hasNot;

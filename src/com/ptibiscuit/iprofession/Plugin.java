@@ -1,16 +1,16 @@
 package com.ptibiscuit.iprofession;
 
-import com.ptibiscuit.framework.JavaPluginEnhancer;
-import com.ptibiscuit.iprofession.data.IData;
-import com.ptibiscuit.iprofession.data.YamlData;
-import com.ptibiscuit.iprofession.data.models.*;
-import com.ptibiscuit.iprofession.data.models.skill.Skill;
-import com.ptibiscuit.iprofession.listeners.LearnManagerSign;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import me.tehbeard.BeardStat.BeardStat;
 import me.tehbeard.BeardStat.containers.PlayerStatBlob;
 import me.tehbeard.BeardStat.containers.PlayerStatManager;
 import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -25,6 +25,15 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.ptibiscuit.framework.JavaPluginEnhancer;
+import com.ptibiscuit.iprofession.data.IData;
+import com.ptibiscuit.iprofession.data.YamlData;
+import com.ptibiscuit.iprofession.data.models.Profession;
+import com.ptibiscuit.iprofession.data.models.ProfessionGroup;
+import com.ptibiscuit.iprofession.data.models.Require;
+import com.ptibiscuit.iprofession.data.models.skill.Skill;
+import com.ptibiscuit.iprofession.listeners.LearnManagerSign;
 
 
 public class Plugin extends JavaPluginEnhancer {

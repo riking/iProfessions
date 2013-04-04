@@ -4,18 +4,19 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.ArrayList;
 import java.util.Map;
+
 import org.bukkit.Location;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.ptibiscuit.iprofession.Plugin;
+
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillBreakBlock extends SkillSimpleId {

@@ -4,10 +4,11 @@
  */
 package com.ptibiscuit.iprofession.data;
 
-import com.ptibiscuit.iprofession.data.models.Profession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.ptibiscuit.iprofession.data.models.Profession;
 
 public interface IData {
     public void loadProfessions();

@@ -1,8 +1,7 @@
 package com.ptibiscuit.iprofession.listeners;
 
-import com.ptibiscuit.iprofession.Plugin;
-import com.ptibiscuit.iprofession.data.models.Profession;
 import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -12,6 +11,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import com.ptibiscuit.iprofession.Plugin;
+import com.ptibiscuit.iprofession.data.models.Profession;
 
 public class LearnManagerSign implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)

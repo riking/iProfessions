@@ -1,12 +1,13 @@
 package com.ptibiscuit.iprofession.data.models;
 
-import com.ptibiscuit.iprofession.Plugin;
-import com.ptibiscuit.iprofession.data.models.skill.Skill;
 import java.util.ArrayList;
 import java.util.Map;
 
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachment;
+
+import com.ptibiscuit.iprofession.Plugin;
+import com.ptibiscuit.iprofession.data.models.skill.Skill;
 
 public class Profession {
     private Plugin p;

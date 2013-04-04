@@ -4,9 +4,9 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.ArrayList;
 import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -15,8 +15,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.ptibiscuit.iprofession.Plugin;
+
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillGainMoneyOnBreakBlock extends SkillSimpleId implements Listener {

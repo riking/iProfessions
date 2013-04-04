@@ -4,15 +4,16 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.Map;
-import org.bukkit.entity.EntityType;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import com.ptibiscuit.iprofession.Plugin;
 
 public class SkillGainMoneyOnKillCreature extends SkillSimpleMonster implements Listener {
     private double reward;

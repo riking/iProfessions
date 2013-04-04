@@ -4,15 +4,16 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.configuration.MemoryConfiguration;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import com.ptibiscuit.iprofession.Plugin;
+
 /**
- * 
+ *
  * @author ANNA
  */
 public abstract class Skill implements Listener {

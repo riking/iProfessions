@@ -4,8 +4,8 @@
  */
 package com.ptibiscuit.iprofession.data.models.skill;
 
-import com.ptibiscuit.iprofession.Plugin;
 import java.util.Map;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,8 +14,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.FurnaceInventory;
 
+import com.ptibiscuit.iprofession.Plugin;
+
 /**
- * 
+ *
  * @author ANNA
  */
 public class SkillSmeltItem extends SkillSimpleId implements Listener {

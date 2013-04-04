@@ -1,8 +1,5 @@
 package com.ptibiscuit.iprofession.data.models;
 
-import org.bukkit.entity.Player;
-
-import com.ptibiscuit.iprofession.Plugin;
 
 public class Require {
     private String category;

@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 
 /**
- *
+ * 
  * @author ANNA
  */
 public class SkillSimpleId extends Skill {

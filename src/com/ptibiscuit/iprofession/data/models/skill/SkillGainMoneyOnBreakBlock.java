@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
- *
+ * 
  * @author ANNA
  */
 public class SkillGainMoneyOnBreakBlock extends SkillSimpleId implements Listener {

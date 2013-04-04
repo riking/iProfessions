@@ -9,7 +9,7 @@ import java.util.Map;
 import org.bukkit.entity.EntityType;
 
 /**
- *
+ * 
  * @author ANNA
  */
 public class SkillSimpleMonster extends Skill {

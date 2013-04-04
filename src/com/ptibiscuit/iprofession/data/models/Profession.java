@@ -16,12 +16,11 @@ public class Profession {
     private double price;
     private Profession parent;
     private String group;
-    
+
     private ArrayList<Require> prerequis = new ArrayList<Require>();
     private Map<String, Boolean> permissions;
-    
-    public Profession(Plugin p, String tag, String name, ArrayList<Skill> skills, Map<String, Boolean> permissions, ArrayList<Require> prerequis, Profession parent, double price, String group)
-    {
+
+    public Profession(Plugin p, String tag, String name, ArrayList<Skill> skills, Map<String, Boolean> permissions, ArrayList<Require> prerequis, Profession parent, double price, String group) {
         this.p = p;
         this.name = name;
         this.skills = skills;
@@ -36,16 +35,15 @@ public class Profession {
     public String getGroup() {
         return group;
     }
-    
-    public boolean hasSkill(Skill sk)
-    {
+
+    public boolean hasSkill(Skill sk) {
         if (parent != null)
             if (parent.hasSkill(sk))
                 return true;
-        
+
         return (this.skills.contains(sk));
     }
-    
+
     public String getName() {
         return name;
     }
@@ -53,7 +51,7 @@ public class Profession {
     public String getTag() {
         return tag;
     }
-    
+
     public boolean isInTheSameTree(Profession other) {
         // On regarde si en faisant l'iteration des parents de l'un des 2, on tombe sur l'autre.
         Profession localParent = other;
@@ -62,7 +60,7 @@ public class Profession {
                 return true;
             localParent = localParent.getParent();
         }
-        
+
         // Maintenant, en partant de this
         localParent = this.getParent();
         while (localParent != null) {
@@ -70,10 +68,10 @@ public class Profession {
                 return true;
             localParent = localParent.getParent();
         }
-        
+
         return false;
     }
-    
+
     public ArrayList<Skill> getSkills() {
         return skills;
     }
@@ -94,7 +92,7 @@ public class Profession {
     public Profession getParent() {
         return parent;
     }
-    
+
     public Map<String, Boolean> getGrantedPermissions() {
         return permissions;
     }

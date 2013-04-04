@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
- *
+ * 
  * @author ANNA
  */
 public class SkillUseItem extends SkillSimpleId {

@@ -22,7 +22,7 @@ public abstract class Skill implements Listener {
     public abstract void onEnable(Map<?, ?> config);
 
     private boolean isGod(Player p) {
-        return (Plugin.getInstance().getPermissionHandler().has(p, "god", true));
+        return p.hasPermission(Plugin.getInstance().godperm);
     }
 
     public boolean hasToAct(Player p) {
@@ -35,6 +35,7 @@ public abstract class Skill implements Listener {
     static {
         String baseUrl = "com.ptibiscuit.iprofession.data.models.skill.";
         // Pure Skill, like the first ones :3
+        // XXX This is a horrible thing to do
         skillTypes.put("breakBlock", baseUrl + "SkillBreakBlock");
         skillTypes.put("placeBlock", baseUrl + "SkillPlaceBlock");
         skillTypes.put("craftItem", baseUrl + "SkillCraftItem");

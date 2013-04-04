@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ptibiscuit</groupId>
   <artifactId>iprofessions</artifactId>
-  <version>1.5.1-R0.1-SNAPSHOT</version>
+  <version>1.5.1-R0.1</version>
   <name>iProfessions</name>
   <repositories>
     <repository>

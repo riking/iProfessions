@@ -45,6 +45,7 @@ public class Plugin extends JavaPluginEnhancer {
 
     // TODO: Move to plugin.yml
     public Permission learn = new Permission("iprofession.learn", "Learn a new profession", PermissionDefault.TRUE);
+    public Permission learn_sign = new Permission("iprofession.learn.sign", "Learn a new profession by clicking a sign", PermissionDefault.TRUE);
     public Permission forget = new Permission("iprofession.forget", "Forget your profession", PermissionDefault.TRUE);
     public Permission learn_op = new Permission("iprofession.learn.other", "Cause another user to learn a profession", PermissionDefault.OP);
     public Permission forget_op = new Permission("iprofession.learn.other", "Cause another user to forget a profession", PermissionDefault.OP);
@@ -61,7 +62,7 @@ public class Plugin extends JavaPluginEnhancer {
 
     @Override
     public void onEnable() {
-        this.setup(ChatColor.BLUE + "[iProfessions]", "iprofessions", true);
+        setup(ChatColor.BLUE + "[iProfessions]", "iprofessions", true);
         Plugin.instance = this;
 
         myLog.startFrame();
@@ -75,12 +76,12 @@ public class Plugin extends JavaPluginEnhancer {
         // On doit rendre autonome chaque skill
         for (Profession p : data.getProfessions()) {
             for (Skill s : p.getSkills()) {
-                this.getServer().getPluginManager().registerEvents(s, this);
+                getServer().getPluginManager().registerEvents(s, this);
             }
         }
 
         // Loading group of professions.
-        for (Map<?, ?> dataGroup : this.getConfig().getMapList("config.profession_groups")) {
+        for (Map<?, ?> dataGroup : getConfig().getMapList("config.profession_groups")) {
             int count = (Integer) dataGroup.get("max_profession");
             @SuppressWarnings("unchecked")
             ArrayList<String> professionsTag = (ArrayList<String>) dataGroup.get("professions");
@@ -88,21 +89,23 @@ public class Plugin extends JavaPluginEnhancer {
             for (String pTag : professionsTag) {
                 professions.add(data.getProfession(pTag));
             }
-            this.professionGroups.add(new ProfessionGroup(professions, count));
+            professionGroups.add(new ProfessionGroup(professions, count));
         }
-        if (this.setupStats())
+        if (setupStats()) {
             myLog.addInFrame("Stats detected, you can use the required field !");
-        else
+        } else {
             myLog.addInFrame("Stats not detected.");
+        }
 
-        if (this.setupEconomy())
+        if (setupEconomy()) {
             myLog.addInFrame("Economy detected, you can use the price field !");
-        else
+        } else {
             myLog.addInFrame("Economy not detected, too bad !");
+        }
 
         // On active nos listeners
-        PluginManager pManager = this.getServer().getPluginManager();
-        pManager.registerEvents(this.lms, this);
+        PluginManager pManager = getServer().getPluginManager();
+        pManager.registerEvents(lms, this);
         myLog.displayFrame(false);
     }
 
@@ -110,7 +113,7 @@ public class Plugin extends JavaPluginEnhancer {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // TODO restrict to player later
         if (!(sender instanceof Player)) {
-            sender.sendMessage("[iProfessions] " + this.getSentence("run_as_player"));
+            sender.sendMessage("[iProfessions] " + getSentence("run_as_player"));
             return true;
         }
         Player writer = (Player) sender;
@@ -123,7 +126,7 @@ public class Plugin extends JavaPluginEnhancer {
                         this.sendPreMessage(writer, "have_perm");
                         return true;
                     }
-                    this.tryToLearn(writer, p);
+                    tryToLearn(writer, p);
                 } else {
                     this.sendPreMessage(writer, "unknown_tag");
                 }
@@ -138,10 +141,10 @@ public class Plugin extends JavaPluginEnhancer {
                     // TODO player.hasProfession
                     ArrayList<Profession> playerProfs = data.getProfessionByPlayer(writer.getName());
                     if (playerProfs.contains(p)) {
-                        this.removeProfessionToPlayer(p, writer);
+                        removeProfessionToPlayer(p, writer);
                         this.sendPreMessage(writer, "forget_succ");
                     } else {
-                        this.sendMessage(sender, this.getSentence("havnt_profession"));
+                        this.sendMessage(sender, getSentence("havnt_profession"));
                     }
                 } else {
                     this.sendPreMessage(writer, "unknown_tag");
@@ -153,10 +156,10 @@ public class Plugin extends JavaPluginEnhancer {
                 }
                 Profession p = data.getProfession(args[1]);
                 if (p != null) {
-                    Player player = this.getServer().getPlayer(args[0]);
+                    Player player = getServer().getPlayer(args[0]);
                     if (player != null) {
-                        this.addProfessionToPlayer(p, player);
-                        this.sendMessage(sender, this.getSentence("profession_added").replace("{PLAYER}", player.getName()));
+                        addProfessionToPlayer(p, player);
+                        this.sendMessage(sender, getSentence("profession_added").replace("{PLAYER}", player.getName()));
                     } else {
                         this.sendPreMessage(sender, "player_unknown");
                     }
@@ -177,27 +180,27 @@ public class Plugin extends JavaPluginEnhancer {
                     if ((sender.hasPermission(showplayers_all)) || (playerProfs.contains(p) && sender.hasPermission(showplayers_own))) {
 
                         ArrayList<Player> players = new ArrayList<Player>();
-                        for (Player playerFoc : this.getServer().getOnlinePlayers()) {
+                        for (Player playerFoc : getServer().getOnlinePlayers()) {
                             if (data.getProfessionByPlayer(playerFoc.getName()).contains(p)) {
                                 players.add(playerFoc);
                             }
                         }
                         if (players.size() > 0) {
-                            this.sendMessage(sender, this.getSentence("list_online_head").replace("{PROF}", args[0]));
+                            this.sendMessage(sender, getSentence("list_online_head").replace("{PROF}", args[0]));
                             StringBuilder sb = new StringBuilder();
                             for (Player playerFoc : players) {
                                 sb.append(playerFoc.getName()).append(' ');
                             }
                             this.sendMessage(sender, sb.toString().trim());
                         } else {
-                            this.sendMessage(sender, this.getSentence("no_player_online").replace("{PROF}", args[0]));
+                            this.sendMessage(sender, getSentence("no_player_online").replace("{PROF}", args[0]));
                         }
                     } else {
                         this.sendPreMessage(writer, "have_perm");
                     }
                 } else {
                     ArrayList<Player> players = new ArrayList<Player>();
-                    for (Player playerFoc : this.getServer().getOnlinePlayers()) {
+                    for (Player playerFoc : getServer().getOnlinePlayers()) {
                         if (data.getProfessionPlayers().containsKey(playerFoc.getName())) {
                             players.add(playerFoc);
                         }
@@ -223,14 +226,14 @@ public class Plugin extends JavaPluginEnhancer {
 
                 Profession p = data.getProfession(args[1]);
                 if (p != null) {
-                    Player player = this.getServer().getPlayer(args[0]);
+                    Player player = getServer().getPlayer(args[0]);
                     if (player != null) {
                         ArrayList<Profession> playerProfs = data.getProfessionByPlayer(args[0]);
                         if (playerProfs.contains(p)) {
-                            this.removeProfessionToPlayer(p, player);
-                            this.sendMessage(sender, this.getSentence("profession_removed").replace("{PLAYER}", player.getName()));
+                            removeProfessionToPlayer(p, player);
+                            this.sendMessage(sender, getSentence("profession_removed").replace("{PLAYER}", player.getName()));
                         } else {
-                            this.sendMessage(sender, this.getSentence("user_havnt_profession").replace("{PLAYER}", player.getName()));
+                            this.sendMessage(sender, getSentence("user_havnt_profession").replace("{PLAYER}", player.getName()));
                         }
                     } else {
                         this.sendPreMessage(sender, "player_unknown");
@@ -247,25 +250,26 @@ public class Plugin extends JavaPluginEnhancer {
                     }
                     pFocus = writer;
                 } else {
-                    if (!this.getPermissionHandler().has(writer, "whois.other", false)) {
+                    if (!sender.hasPermission(whois_other)) {
                         this.sendPreMessage(writer, "have_perm");
                         return true;
                     }
 
-                    pFocus = this.getServer().getOfflinePlayer(args[0]);
+                    pFocus = getServer().getOfflinePlayer(args[0]);
                 }
 
                 if (pFocus != null) {
-                    this.sendMessage(writer, this.getSentence("whois_entete").replace("{PLAYER}", pFocus.getName()));
+                    this.sendMessage(writer, getSentence("whois_entete").replace("{PLAYER}", pFocus.getName()));
                     ArrayList<Profession> prof = data.getProfessionByPlayer(pFocus.getName());
                     if (prof != null) {
                         String professions = "";
                         for (Profession p : prof) {
                             professions = professions + " " + p.getTag();
                         }
-                        this.sendMessage(writer, this.getSentence("whois_first").replace("{PROFESSION}", professions));
-                    } else
-                        this.sendMessage(writer, this.getSentence("whois_first").replace("{PROFESSION}", "null"));
+                        this.sendMessage(writer, getSentence("whois_first").replace("{PROFESSION}", professions));
+                    } else {
+                        this.sendMessage(writer, getSentence("whois_first").replace("{PROFESSION}", "null"));
+                    }
                 } else {
                     this.sendPreMessage(sender, "player_unknown");
                 }
@@ -281,7 +285,7 @@ public class Plugin extends JavaPluginEnhancer {
         ArrayList<Profession> playerActualProfessions = data.getProfessionByPlayer(writer.getName());
 
         for (Require r : newprof.getRequired()) {
-            int requiredLeft = this.hasRequire(writer.getName(), r);
+            int requiredLeft = hasRequire(writer.getName(), r);
             if (requiredLeft > 0) {
                 // On affiche le problème
                 this.sendMessage(writer, r.getHasnot().replace("{LEFT}", String.valueOf(requiredLeft)));
@@ -289,7 +293,7 @@ public class Plugin extends JavaPluginEnhancer {
             }
         }
         // On vérifie si notre métier n'appartient pas à un groupe
-        ProfessionGroup pg = this.getGroupByProfession(newprof);
+        ProfessionGroup pg = getGroupByProfession(newprof);
         if (pg != null) {
             // On regarde le nombre actuelle de métier qu'il a, il faut qu'il soit strictement
             // inférieur au nombre maximal de métier dans cette catégorie.
@@ -310,26 +314,27 @@ public class Plugin extends JavaPluginEnhancer {
             }
         }
         // On vérifie qu'il n'a pas déjà atteint le max de profession dans ce groupe.
-        //ProfessionGroup professionGroup = 
+        //ProfessionGroup professionGroup =
 
         // On regarde si il a l'argent
-        if (newprof.getPrice() != 0 && this.isEconomyEnabled()) {
-            double moneyPlayer = this.economy.getBalance(writer.getName());
+        if (newprof.getPrice() != 0 && isEconomyEnabled()) {
+            double moneyPlayer = economy.getBalance(writer.getName());
             if (moneyPlayer < newprof.getPrice()) {
-                this.sendMessage(writer, getSentence("cant_afford").replace("{PRICE}", this.economy.format(newprof.getPrice())));
+                this.sendMessage(writer, getSentence("cant_afford").replace("{PRICE}", economy.format(newprof.getPrice())));
                 return false;
             }
         }
         if (newprof.getParent() == null) {
             // Il ne lui faut qu'une place de libre dans ses professions !
-            if (playerActualProfessions.size() >= this.getConfig().getInt("config.max_profession")) {
+            if (playerActualProfessions.size() >= getConfig().getInt("config.max_profession")) {
                 this.sendPreMessage(writer, "cant_learn_more_prof");
                 return false;
             } else {
-                this.addProfessionToPlayer(newprof, writer);
+                addProfessionToPlayer(newprof, writer);
                 this.sendPreMessage(writer, "profession_learnt");
-                if (this.isEconomyEnabled())
-                    this.economy.withdrawPlayer(writer.getName(), newprof.getPrice());
+                if (isEconomyEnabled()) {
+                    economy.withdrawPlayer(writer.getName(), newprof.getPrice());
+                }
                 return true;
             }
         } else {
@@ -339,11 +344,12 @@ public class Plugin extends JavaPluginEnhancer {
                 return false;
             } else {
                 // Ok, on enlève la profession parent
-                this.removeProfessionToPlayer(newprof.getParent(), writer);
-                this.addProfessionToPlayer(newprof, writer);
+                removeProfessionToPlayer(newprof.getParent(), writer);
+                addProfessionToPlayer(newprof, writer);
                 this.sendPreMessage(writer, "profession_learnt");
-                if (this.isEconomyEnabled())
-                    this.economy.withdrawPlayer(writer.getName(), newprof.getPrice());
+                if (isEconomyEnabled()) {
+                    economy.withdrawPlayer(writer.getName(), newprof.getPrice());
+                }
                 return true;
             }
         }
@@ -407,8 +413,9 @@ public class Plugin extends JavaPluginEnhancer {
     public boolean hasSkill(Player pl, Skill s) {
         ArrayList<Profession> profs = data.getProfessionByPlayer(pl.getName());
         for (Profession p : profs) {
-            if (p.hasSkill(s))
+            if (p.hasSkill(s)) {
                 return true;
+            }
         }
         return false;
     }
@@ -421,7 +428,7 @@ public class Plugin extends JavaPluginEnhancer {
         // If profession has a linked-group
         String groupTag = prof.getGroup();
         if (groupTag != null) {
-            net.milkbowl.vault.permission.Permission perm = this.getPermissionHandler().getPermission();
+            net.milkbowl.vault.permission.Permission perm = getPermissionHandler().getPermission();
             perm.playerAddGroup(p, groupTag);
         }
     }
@@ -433,7 +440,7 @@ public class Plugin extends JavaPluginEnhancer {
         // If profession has a linked-group
         String groupTag = prof.getGroup();
         if (groupTag != null) {
-            net.milkbowl.vault.permission.Permission perm = this.getPermissionHandler().getPermission();
+            net.milkbowl.vault.permission.Permission perm = getPermissionHandler().getPermission();
             perm.playerRemoveGroup(p, groupTag);
         }
     }
@@ -461,10 +468,11 @@ public class Plugin extends JavaPluginEnhancer {
     private PlayerStatManager statManager;
 
     public boolean setupStats() {
-        JavaPlugin plug = (JavaPlugin) this.getServer().getPluginManager().getPlugin("BeardStat");
-        if (plug == null)
+        JavaPlugin plug = (JavaPlugin) getServer().getPluginManager().getPlugin("BeardStat");
+        if (plug == null) {
             return false;
-        this.statManager = ((BeardStat) plug).getStatManager();
+        }
+        statManager = ((BeardStat) plug).getStatManager();
         return true;
     }
 
@@ -473,17 +481,17 @@ public class Plugin extends JavaPluginEnhancer {
      * it means that it hasn't the required (Cause required would be higher than the actual)
      */
     public int hasRequire(String playername, Require req) {
-        return req.getRequired() - this.getStatValue(playername, req.getCategory(), req.getKey());
+        return req.getRequired() - getStatValue(playername, req.getCategory(), req.getKey());
     }
 
     public int getStatValue(String playerName, String cat, String stat) {
         if (isUsingStat()) {
-            PlayerStatBlob playerStat = this.statManager.findPlayerBlob(playerName);
+            PlayerStatBlob playerStat = statManager.findPlayerBlob(playerName);
             if (playerStat != null) {
                 if (playerStat.hasStat(cat, stat)) {
                     return playerStat.getStat(cat, stat).getValue();
                 } else {
-                    this.myLog.warning("You're using a stat that doesn't exist: " + cat + "-" + stat);
+                    myLog.warning("You're using a stat that doesn't exist: " + cat + "-" + stat);
                 }
             }
         }
@@ -491,7 +499,7 @@ public class Plugin extends JavaPluginEnhancer {
     }
 
     public boolean isUsingStat() {
-        return (this.statManager != null);
+        return (statManager != null);
     }
 
     /*
@@ -504,12 +512,12 @@ public class Plugin extends JavaPluginEnhancer {
         if (rsp == null) {
             return false;
         }
-        this.economy = rsp.getProvider();
+        economy = rsp.getProvider();
         return economy != null;
     }
 
     public Economy getEconomy() {
-        return this.economy;
+        return economy;
     }
 
     public boolean isWorldActivated(World w) {
@@ -526,14 +534,15 @@ public class Plugin extends JavaPluginEnhancer {
     }
 
     public ProfessionGroup getGroupByProfession(Profession p) {
-        for (ProfessionGroup pg : this.professionGroups) {
-            if (pg.isInGroup(p))
+        for (ProfessionGroup pg : professionGroups) {
+            if (pg.isInGroup(p)) {
                 return pg;
+            }
         }
         return null;
     }
 
     public boolean isEconomyEnabled() {
-        return (this.economy != null);
+        return (economy != null);
     }
 }
